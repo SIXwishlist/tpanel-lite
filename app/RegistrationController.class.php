@@ -3,6 +3,7 @@
 namespace App;
 use Base\MVC\Controller;
 use Base\App;
+use Base\Form;
 
 class RegistrationController extends Controller
 {
