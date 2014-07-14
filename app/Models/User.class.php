@@ -1,7 +1,12 @@
 <?php
 
 namespace App\Models;
-use Base\Model\DbModel;
+use Base\MVC\Model\DbModel;
+use Base\Mail;
+use Base\Template;
+use Base\Arr;
+use Base\Validator;
+use Base\App;
 
 class User extends DbModel
 {
@@ -16,6 +21,16 @@ class User extends DbModel
 	function setUser ($uid)
 	{
 		$this->userId = $uid;
+	}
+	
+	function usernameFromId ($uid)
+	{
+		return $this->filter('user_id', $uid)->data('username');
+	}
+	
+	function getPath ()
+	{
+		return $this->Config->getUserDir().'/'.$this->User->usernameFromId($this->userId).'/';
 	}
 	
 	function availableSpace ()

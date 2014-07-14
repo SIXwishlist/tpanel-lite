@@ -1,7 +1,10 @@
 <?php
 
 namespace App\Models;
-use Base\Model\DbModel;
+use Base\MVC\Model\DbModel;
+use Base\App;
+use Base\IO\File;
+use Base\IO\Zip;
 
 class Backup extends DbModel
 {
@@ -47,6 +50,8 @@ class Backup extends DbModel
 	
 	function destroy ()
 	{
+		$this->filter('user_id', $this->userId)->clear();
+		
 		$backup = App::Data($this->getBackupFile())->getFullPath();
 		if (File::isFile($backup))
 		{
@@ -61,17 +66,38 @@ class Backup extends DbModel
 	
 	function backup ()
 	{
-		// ZipArchive user's directory
+		$this->User->setUser($this->userId);
+		$zip = new Zip(App::Data($this->getBackupFile())->getFullPath(), 'w');
+		// true = recursive
+		$zip->addDirectory($this->User->getPath(), true);
+		return $zip->close();
 	}
 	
 	function restore ()
 	{
-		// ZipArchive unzip backup to user's directory
+		$this->User->setUser($this->userId);
+		$zip = new Zip(App::Data($this->getBackupFile())->getFullPath(), 'r');
+		// true = overwrite duplicates
+		$result = $zip->extractAll($this->User->getPath(), true);
+		$zip->close();
+		return $result;
 	}
 	
 	function listFiles ()
 	{
-		// ZipArchive iterate with statIndex
+		$file = App::Data($this->getBackupFile())->getFullPath();
+		if (File::isFile($file))
+		{
+			$zip = new Zip($file, 'r');
+			// true = recursive
+			$files = $zip->listAll(true);
+			$zip->close();
+			return $files;
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	function getDate ()
