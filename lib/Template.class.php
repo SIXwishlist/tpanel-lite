@@ -138,4 +138,14 @@ class Template
 		extract($this->data, EXTR_SKIP);
 		eval('?>'.$this->toPHP());
 	}
+	
+	function _render ()
+	{
+		extract($this->data, EXTR_SKIP);
+		ob_start();
+		eval('?>'.$this->toPHP());
+		$c = ob_get_contents();
+		ob_end_clean();
+		return $c;
+	}
 }

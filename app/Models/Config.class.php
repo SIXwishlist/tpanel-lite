@@ -21,18 +21,38 @@ class Config extends Model
 		$this->file = App::Data('tpanel.conf')->getFullPath();
 	}
 	
-	function getUserDir ()
+	function get ($key)
 	{
 		if ($this->conf === null)
 		{
 			$this->conf = parse_ini_file($this->file);
 		}
 		
-		if ($this->conf === false || !isset($this->conf['user_dir']))
+		if ($this->conf === false || !isset($this->conf[$key]))
 		{
 			throw new Exception('Configuration Error', 'The configuration file is corrupted');
 		}
-		return $this->conf['user_dir'];
+		return $this->conf[$key];
+	}
+	
+	function getUserDir ()
+	{
+		return $this->get('user_dir');
+	}
+	
+	function getFrontendURL ()
+	{
+		return Path::web('/');
+	}
+	
+	function getAdminEmail ()
+	{
+		return $this->get('admin_email');
+	}
+	
+	function getWebHostName ()
+	{
+		return $this->get('web_host_name');
 	}
 	
 	function store ($data)

@@ -70,43 +70,97 @@ class User extends DbModel
 		$v->regex('username', '/^[A-Za-z0-9\_]+$/');
 		$v->same('password_1', 'password_2', 'Passwords do not match');
 		$v->length('password_1', 6, false, 'Password must be at least 6 characters long');
-		$v->assert($this->userExists($data['username']), sprintf('Username "%s" is already taken', $data['username']));
-		$v->assert($this->emailExists($data['email']), 'Email address already in use for another account');
+		$v->assert(!$this->userExists($data['username']), sprintf('Username "%s" is already taken', $data['username']));
+		$v->assert(!$this->emailExists($data['email']), 'Email address already in use for another account');
 		return $v;
+	}
+	
+	protected function userExists ($username)
+	{
+		return $this->filter('username', $username)->min(1);
+	}
+	
+	protected function emailExists ($email)
+	{
+		return $this->filter('email', $email)->min(1);
 	}
 	
 	function create ($data)
 	{
 		// set userId
+		$user = array();
+		$user['username'] = $data['username'];
+		$user['password'] = ['MD5(?)' => [$data['password_1']];
+		$user['email'] = $data['email'];
+		$user['full_name'] = $data['full_name'];
+		$user['webspace'] = $this->Config->getNewUserSpace();
+		$user['user_level'] = 0;
+		$user['activation_code'] = md5(date('Y-m-d g:i:s A'));
+		$id = $this->add($user);
+		if ($id !== false)
+		{
+			$this->userId = $id;
+		}
+		return $id;
 	}
 	
 	function sendActivationEmail ($email)
 	{
-	
+		$r = $this->filter('user_id', $this->userId);
+		$tplFile = App::Data('emails/activate.tpl')->getFullPath();
+		$template = Template::fromFile($tplFile);
+		$template->email = $email;
+		$template->username = $r->data('username');
+		$template->full_name = $r->data('full_name');
+		$template->activation_code = $r->data('activation_code');
+		$template->base_url = $this->Config->getFrontendURL();
+		$template->user_id = $this->userId;
+		
+		$m = new Mail();
+		$m->to($email);
+		$m->from($this->Config->getAdminEmail());
+		$m->subject(sprintf('%s - Account Activation Required', $this->Config->getWebHostEmail()));
+		$m->body($template->_render());
+		
+		return $m->send();
 	}
 	
 	function activate ($activationCode)
 	{
-	
+		$r = $this->filter('activation_code', $activationCode)->filter('user_id', $this->userId);
+		if ($r->min(1))
+		{
+			// Activated
+			return $this->set($this->userId, ['user_level' => 1]);
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	function listUsers ($page = 0)
 	{
-	
+		// NOTE: DB calls
+		return $this->display($this->perPage, $page)->rows();
 	}
 	
 	function count ()
 	{
-	
+		// NOTE: DB call
+		return $this->row_count();
 	}
 	
 	function deleteUser ($userId)
 	{
-	
+		// NOTE: DB calls
+		return $this->filter('user_id', $userId)->clear() > 0;
 	}
 	
 	function modify ($userId, $data)
 	{
-	
+		$data = Arr::filter($data, ['user_level', 'username', 'password', 'email', 'full_name', 'webspace']);
+		// NOTE: DB call
+		return $this->set($userId, $data);
 	}
 }
