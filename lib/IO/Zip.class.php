@@ -12,5 +12,28 @@ use \ZipArchive;
 
 class Zip
 {
-
+	function __construct ($file, $accessMode = 'r')
+	{
+	
+	}
+	
+	function addDirectory ($dir, $recursive = false)
+	{
+	
+	}
+	
+	function close ()
+	{
+	
+	}
+	
+	function extractAll ($path, $overwrite = false)
+	{
+	
+	}
+	
+	function listAll ($recursive = false)
+	{
+	
+	}
 }

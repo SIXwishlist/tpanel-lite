@@ -37,7 +37,7 @@ class Backup extends DbModel
 		else
 		{
 			$hash = md5(date('m/d/Y g:i:s A'));
-			if ($this->add($this->userId, ['backup_time' => ['NOW()'], 'backup_file_hash' => $hash]))
+			if ($this->add(['user_id' => $this->userId, 'backup_time' => ['NOW()'], 'backup_file_hash' => $hash]))
 			{
 				return sprintf('backups/%s', $hash);
 			}

@@ -11,5 +11,8 @@ namespace Base\MVC;
 
 abstract class Controller
 {
-
+	protected function __get ($modelName)
+	{
+	
+	}
 }

@@ -11,5 +11,23 @@ namespace Base;
 
 class Mail
 {
-
+	function to ($email)
+	{
+	
+	}
+	
+	function from ($sender)
+	{
+	
+	}
+	
+	function subject ($s)
+	{
+	
+	}
+	
+	function body ($b)
+	{
+	
+	}
 }

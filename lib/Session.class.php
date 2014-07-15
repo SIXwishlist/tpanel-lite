@@ -9,7 +9,30 @@
 
 namespace Base;
 
-class 
+class Session
 {
-
+	function __construct ($group)
+	{
+	
+	}
+	
+	function get ($key, $default = null)
+	{
+	
+	}
+	
+	function set ($key, $value)
+	{
+	
+	}
+	
+	function delete ($key)
+	{
+	
+	}
+	
+	function exists ($key)
+	{
+	
+	}
 }

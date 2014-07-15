@@ -11,5 +11,8 @@ namespace Base;
 
 class Arr
 {
-
+	public static function filter ($data, $keys)
+	{
+	
+	}
 }

@@ -11,5 +11,8 @@ namespace Base;
 
 class Exception extends \Exception
 {
-
+	function __construct ($title, $message)
+	{
+	
+	}
 }

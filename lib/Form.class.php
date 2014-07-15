@@ -12,5 +12,8 @@ namespace Base;
 
 class Form
 {
-
+	function __construct ($request)
+	{
+	
+	}
 }

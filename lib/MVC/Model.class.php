@@ -11,5 +11,8 @@ namespace Base\MVC;
 
 abstract class Model
 {
-
+	function __get ($modelName)
+	{
+	
+	}
 }

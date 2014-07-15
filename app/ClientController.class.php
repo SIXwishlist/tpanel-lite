@@ -8,8 +8,9 @@
 
 namespace App;
 use Base\App;
-use Base\File;
+use Base\IO\File;
 use Base\Form;
+use Base\Filter;
 
 class ClientController extends ClientBase
 {
@@ -76,14 +77,14 @@ class ClientController extends ClientBase
 		
 		$view->files = $this->FileSystem->listFiles($dir);
 		$view->usagePercent = $this->getFreeSpacePercent();
-		$view->usage = File::sizeHuman($this->FileSystem->used());
+		$view->usage = Filter::fileSize($this->FileSystem->used());
 		if ($this->User->availableSpace() === 0)
 		{
 			$view->free = 'Unlimited';
 		}
 		else
 		{
-			$view->free = File::sizeHuman($this->User->availableSpace() - $this->FileSystem->used());
+			$view->free = Filter::fileSize($this->User->availableSpace() - $this->FileSystem->used());
 		}
 		$view->dir = $dir;
 		
@@ -100,14 +101,14 @@ class ClientController extends ClientBase
 		
 		// NOTE: Use Chart.js Pie chart for displaying directory usages
 		$view->usageData = $this->FileSystem->usageAsJSON();
-		$view->usage = File::sizeHuman($this->FileSystem->used());
+		$view->usage = Filter::fileSize($this->FileSystem->used());
 		if ($this->User->availableSpace())
 		{
 			$view->available = 'Unlimited';
 		}
 		else
 		{
-			$view->available = File::sizeHuman($this->User->availableSpace());
+			$view->available = Filter::fileSize($this->User->availableSpace());
 		}
 		
 		$view->render('disk_usage');
@@ -163,7 +164,7 @@ class ClientController extends ClientBase
 			}
 		}
 		
-		$form = new Form();
+		$form = new Form($request);
 		$form->assign($this->User->getConfig());
 		
 		// Display a warning to the user if they click "Remove"

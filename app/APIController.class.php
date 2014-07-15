@@ -23,7 +23,7 @@ class APIController extends Controller
 	{
 		if (!App::Auth('Client')->enabled())
 		{
-			App::Session('Redirect')->set($request->URL());
+			App::Session('Redirect')->set('url', $request->URL());
 			App::flash('You must be logged in to use this API');
 			App::redirect('@LoginController::client');
 		}

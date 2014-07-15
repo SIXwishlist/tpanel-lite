@@ -1,12 +1,17 @@
 <?php
 
+use Base\App;
+use Base\MVC\View;
+
 class Application
 {
-	function before_run ()
+	public $theme = null;
+	
+	function __construct ()
 	{
 		$conf = parse_ini_file(App::Data('tpanel.conf')->getFullPath());
 		
-		View::setTheme($conf['theme']);
+		$this->theme = $conf['theme'];
 		View::setAdapter('Template');
 	}
 }

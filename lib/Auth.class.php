@@ -11,5 +11,33 @@ namespace Base;
 
 class Auth
 {
-
+	function __construct ($group)
+	{
+	
+	}
+	
+	function enabled ()
+	{
+	
+	}
+	
+	function get ($key)
+	{
+	
+	}
+	
+	function set ($key, $value)
+	{
+	
+	}
+	
+	function disable ()
+	{
+	
+	}
+	
+	function enable ()
+	{
+	
+	}
 }

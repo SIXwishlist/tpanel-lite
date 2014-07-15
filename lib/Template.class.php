@@ -48,6 +48,9 @@ class Template
 	{
 		$this->code = explode("\n", $code);
 		$this->output = '';
+		$this->addFunction('theme', array($this, 'theme'));
+		$this->addFunction('url', array($this, 'url'));
+		$this->addFunction('filter', array($this, 'filter'));
 	}
 
 	protected function build ()
@@ -147,5 +150,10 @@ class Template
 		$c = ob_get_contents();
 		ob_end_clean();
 		return $c;
+	}
+	
+	public static function fromFile ($file)
+	{
+	
 	}
 }

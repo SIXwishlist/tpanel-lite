@@ -2,6 +2,7 @@
 
 namespace App;
 use Base\App;
+use Base\Form;
 
 class AdminController extends AdminBase
 {	
@@ -12,7 +13,7 @@ class AdminController extends AdminBase
 	
 	function config ($request, $view)
 	{
-		$form = new Form();
+		$form = new Form($request);
 		
 		if ($request->isPost())
 		{

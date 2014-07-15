@@ -14,6 +14,20 @@ class LoginController extends Controller
 		}
 		elseif (App::Auth('Client')->enabled())
 		{
+			$this->redirect();
+		}
+	}
+	
+	protected function redirect ()
+	{
+		if (App::Session('Redirect')->exists('url'))
+		{
+			$url = App::Session('Redirect')->get('url');
+			App::Session('Redirect')->delete('url');
+			App::redirect($url);
+		}
+		else
+		{
 			App::redirect('@ClientController::home');
 		}
 	}
@@ -32,7 +46,7 @@ class LoginController extends Controller
 				App::Auth('Client')->set('username', $user);
 				App::Auth('Client')->set('userId', $userId);
 				App::flash('Login successful');
-				App::redirect('@ClientController::home');
+				$this->redirect();
 			}
 			else
 			{
@@ -56,7 +70,7 @@ class LoginController extends Controller
 				App::Auth('Client')->set('username', $user);
 				App::Auth('Client')->set('userId', $userId);
 				App::flash('Login successful');
-				App::redirect('@ClientController::home');
+				App::redirect('@AdminController::home');
 			}
 			else
 			{

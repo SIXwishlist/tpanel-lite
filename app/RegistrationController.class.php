@@ -21,7 +21,7 @@ class RegistrationController extends Controller
 	
 	function register ($request, $view)
 	{
-		$form = new Form();
+		$form = new Form($request);
 		if ($request->isPost())
 		{
 			// Validate registration
