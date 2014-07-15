@@ -11,6 +11,9 @@ use \PDO;
 
 class Db
 {
+	const NORMAL = 0;
+	const LAZY = 1;
+	
 	protected $pdo;
 	protected $rowCount = 0;
 	
@@ -25,10 +28,18 @@ class Db
 		return $this->rowCount;
 	}
 	
-	function sql ($sql)
+	function sql ($sql, $fetchMode = self::NORMAL)
 	{
 		$stmt = $this->pdo->prepare($sql);
-		$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		switch ($fetchMode)
+		{
+			case self::LAZY:
+				$stmt->setFetchMode(PDO::FETCH_LAZY);
+				break;
+			case self::NORMAL:
+			default:
+				$stmt->setFetchMode(PDO::FETCH_ASSOC);
+		}
 		
 		return $stmt;
 	}
