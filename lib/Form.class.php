@@ -12,8 +12,10 @@ namespace Base;
 
 class Form
 {
+	protected $request;
+	
 	function __construct ($request)
 	{
-	
+		$this->request = $request;
 	}
 }

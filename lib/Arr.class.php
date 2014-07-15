@@ -1,5 +1,5 @@
 <?php
-
+// COMPLETE
 /**
  * Arr
  *
@@ -13,6 +13,6 @@ class Arr
 {
 	public static function filter ($data, $keys)
 	{
-	
+		return array_intersect_key($data, array_flip($keys));
 	}
 }

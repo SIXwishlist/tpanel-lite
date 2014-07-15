@@ -1,5 +1,5 @@
 <?php
-
+// COMPLETE
 /**
  * Result
  *
@@ -10,13 +10,20 @@ namespace Base\Db;
 
 class Result
 {
+	protected $data;
+	
+	function __construct ($data)
+	{
+		return $this->data = $data;
+	}
+	
 	function __get ($key)
 	{
-	
+		return $this->data[$key];
 	}
 	
 	function toArray ()
 	{
-	
+		return $this->data;
 	}
 }

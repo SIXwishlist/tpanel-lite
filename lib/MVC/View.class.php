@@ -31,7 +31,13 @@ class View
 	
 	function render ($tplFile)
 	{
-	
+		$msg = App::Session('Flash')->get('message', false);
+		if ($msg !== false)
+		{
+			App::Session('Flash')->delete('message');
+		}
+		print $msg;
+		// TODO
 	}
 	
 	function renderAsJSON ()
@@ -53,5 +59,10 @@ class View
 	public static function setTheme ($theme)
 	{
 		self::$theme = $theme;
+	}
+	
+	public static function flashMessage ($msg)
+	{
+		App::Session('Flash')->set('message', $msg);
 	}
 }

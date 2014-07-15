@@ -1,5 +1,5 @@
 <?php
-
+// COMPLETE
 /**
  * Model
  *
@@ -11,8 +11,15 @@ namespace Base\MVC;
 
 abstract class Model
 {
+	protected $models = array();
+	
 	function __get ($modelName)
 	{
-	
+		if (!isset($this->models[$modelName]))
+		{
+			$modelClass = '\\App\\Models\\'.$modelName;
+			$this->models[$modelName] = new $modelClass();
+		}
+		return $this->models[$modelName];
 	}
 }

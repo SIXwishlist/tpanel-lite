@@ -11,22 +11,24 @@ namespace Base\IO;
 
 class Dir
 {
+	protected $dir;
+	
 	const FILENAME = 0;
 	const SIZE = 1;
 	
 	function __construct ($path)
 	{
-	
+		$this->dir = $path;
 	}
 	
 	function create ($perms = 0644)
 	{
-	
+		return mkdir($this->dir, $perms, true);
 	}
 	
 	function remove ($recursive = false)
 	{
-	
+		
 	}
 	
 	function exists ()
@@ -54,14 +56,14 @@ class Dir
 	
 	}
 	
-	function listAll ($sortBy = self::FILENAME)
+	function listAll ($sortBy = self::FILENAME, $recursive = false)
 	{
 	
 	}
 	
 	function getDir ()
 	{
-	
+		return $this->dir;
 	}
 	
 	function size ($recursive = false)
@@ -71,6 +73,7 @@ class Dir
 	
 	public static function size ($path, $recursive = false)
 	{
-	
+		$d = new Dir($path);
+		return $d->size($recursive);
 	}
 }

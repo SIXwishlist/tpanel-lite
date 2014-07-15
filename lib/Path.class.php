@@ -1,5 +1,5 @@
 <?php
-
+// COMPLETE
 /**
  * Path
  *
@@ -72,6 +72,6 @@ class Path
 		{
 			$themeDir .= '/';
 		}
-		return self::$dir.'themes/'.$themeDir.$path;
+		return self::web('themes/'.$themeDir.$path);
 	}
 }

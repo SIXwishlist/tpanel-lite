@@ -1,5 +1,5 @@
 <?php
-
+// COMPLETE
 /**
  * App
  *
@@ -123,17 +123,18 @@ class App
 	
 	public static function flash ($message)
 	{
-	
+		View::flashMessage($message);
 	}
 	
 	public static function redirect ($url)
 	{
-	
+		header('Location: '.$url);
+		self::complete();
 	}
 	
 	public static function Session ($name)
 	{
-	
+		return new Session($name);
 	}
 	
 	public static function Data ($file)

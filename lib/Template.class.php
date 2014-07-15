@@ -1,5 +1,5 @@
 <?php
-
+// COMPLETE
 /**
  * Template
  *
@@ -154,6 +154,7 @@ class Template
 	
 	public static function fromFile ($file)
 	{
-	
+		$contents = file_get_contents($file);
+		return self::compile($contents);
 	}
 }

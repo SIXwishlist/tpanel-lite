@@ -1,5 +1,5 @@
 <?php
-
+// COMPLETE
 /**
  * Validator
  *
@@ -27,6 +27,7 @@ class Validator
 	const MSG_LENGTH3 = '%s must be between %d and %d characters long';
 	const MSG_DECIMAL = '%s must be a decimal';
 	const MSG_EQUALS = '%s must be "%s"';
+	const MSG_SAME = '"%s" and "%s" are not the same';
 	
 	protected $data;
 	protected $messages;
@@ -246,6 +247,19 @@ class Validator
 		return isset($this->data[$key]) && strlen($this->data[$key]) > 0;
 	}
 	
+	function same ($key1, $key2, $msg = null)
+	{
+		if ($this->has_input($key1) || $this->has_input($key2))
+		{
+			if (strcmp($this->data[$key1], $this->data[$key2]) !== 0)
+			{
+				$this->add_message($msg, self::SAME, array($this->label($key1), $this->label($key2)));
+			}
+		}
+		
+		return $this;
+	}
+	
 	function length ($key, $low, $high = false, $msg = null)
 	{
 		if ($high === false)
@@ -279,6 +293,8 @@ class Validator
 		{
 			$this->add_message($msg, self::MSG_EQUALS, array($this->label($key), $value));
 		}
+		
+		return $this;
 	}
 	
 	function assert ($case, $msg)

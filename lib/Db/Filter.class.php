@@ -24,4 +24,9 @@ class Filter
 	{
 	
 	}
+	
+	function filter ($key, $value)
+	{
+	
+	}
 }

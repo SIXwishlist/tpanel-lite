@@ -1,5 +1,5 @@
 <?php
-
+// COMPLETE
 /**
  * Exception
  *
@@ -11,8 +11,23 @@ namespace Base;
 
 class Exception extends \Exception
 {
+	protected $title;
+	protected $message;
+	
 	function __construct ($title, $message)
 	{
+		parent::__construct($title);
+		$this->title = $title;
+		$this->message = $message;
+	}
 	
+	function getTitle ()
+	{
+		return $this->title;
+	}
+	
+	function getMessage ()
+	{
+		return $this->message;
 	}
 }
