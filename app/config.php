@@ -2,8 +2,9 @@
 
 use Base\App;
 use Base\MVC\View;
+use Base\Package;
 
-class Application
+class Application extends Package
 {
 	public $theme = null;
 	

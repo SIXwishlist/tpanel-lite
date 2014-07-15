@@ -105,7 +105,7 @@ class User extends DbModel
 		// set userId
 		$user = array();
 		$user['username'] = $data['username'];
-		$user['password'] = ['MD5(?)' => [$data['password_1']];
+		$user['password'] = ['MD5(?)' => [$data['password_1']]];
 		$user['email'] = $data['email'];
 		$user['full_name'] = $data['full_name'];
 		$user['webspace'] = $this->Config->getNewUserSpace();

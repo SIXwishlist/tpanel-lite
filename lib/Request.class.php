@@ -52,4 +52,9 @@ class Request
 	{
 	
 	}
+	
+	function params ($data)
+	{
+		$this->params = $data;
+	}
 }

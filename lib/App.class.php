@@ -16,19 +16,75 @@ class App
 {
 	protected static $auth = array();
 	protected static $app = null;
+	protected static $router = null;
+	
+	public static function route (&$request)
+	{
+		$uri = $request->URL();
+		$result = self::$router->lookup($uri);
+		if ($result !== false)
+		{
+			$request->params($result[1]);
+			return $result[0];
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public static function displayNotFound ($request)
+	{
+		print "<h1>Not Found</h1>";
+		print $request->URL().' was not found';
+		self::complete();
+	}
 	
 	public static function execute ($request)
 	{
-		// CODE GOES HERE
-		
-		self::invoke(self::$app, 'afterRun');
+		try
+		{
+			$callable = self::route($request);
+			if ($callable === false)
+			{
+				self::displayNotFound($request);
+			}
+			
+			self::run($request, $callable);
+			
+			self::invoke('afterRun');
+		}
+		catch (Exception $e)
+		{
+			self::displayException($e);
+		}
 	}
 	
-	protected static function invoke ($obj, $method)
+	public static function displayException ($e)
 	{
-		if (method_exists($obj, $method))
+		print "<fieldset><legend>".$e->getTitle()."</legend><p>".$e->getMessage()."</p></fieldset>";
+		self::complete();
+	}
+	
+	public static function complete ()
+	{
+		die;
+	}
+	
+	protected static function run ($request, $callable)
+	{
+		$view = new View();
+		
+		$controller = '\\App\\'.$callable[0];
+		$c = new $controller();
+		call_user_func([$c, $callable[1]], $request, $view);
+	}
+	
+	protected static function invoke ($method)
+	{
+		if (method_exists(self::$app, $method))
 		{
-			call_user_func(array($obj, $method));
+			call_user_func(array(self::$app, $method));
 		}
 	}
 	
@@ -48,9 +104,11 @@ class App
 		{
 			View::setTheme(self::$app->theme);
 		}
+		self::$router = self::$app->getRouter();
+		self::$router->load('app/routes.conf');
 		
 		// Before running the app
-		self::invoke(self::$app, 'beforeRun');
+		self::invoke('beforeRun');
 	}
 	
 	public static function Auth ($name)

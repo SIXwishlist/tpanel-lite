@@ -41,7 +41,7 @@ class APIController extends Controller
 	// List files in a directory
 	function listFiles ($request, $view)
 	{
-		$dir = $request->param('dir', '');
+		$dir = $request->post('dir', '');
 		
 		$view->files = $this->FileSystem->listFiles($dir);
 		$view->renderAsJSON();
@@ -55,7 +55,7 @@ class APIController extends Controller
 	// Upload a file
 	function uploadFile ($request, $view)
 	{
-		$dir = $request->param('dir');
+		$dir = $request->post('dir');
 		
 		$fileInfo = $this->FileSystem->getUploadMeta($request);
 		if (!$this->canSaveFile($fileInfo['size']))
@@ -73,7 +73,7 @@ class APIController extends Controller
 	// Retrieve file metadata
 	function getFileMeta ($request, $view)
 	{
-		$file = $request->param('file');
+		$file = $request->post('file');
 		
 		$view->file = $this->FileSystem->getFileMeta($file);
 		$view->renderAsJSON();
@@ -82,7 +82,7 @@ class APIController extends Controller
 	// Retrieve a file's contents
 	function getFileContents ($request, $view)
 	{
-		$file = $request->param('file');
+		$file = $request->post('file');
 		
 		// NOTE: Base64 encoded (need 'atob' to decode)
 		$view->contents = $this->FileSystem->getContents($file);
@@ -92,7 +92,7 @@ class APIController extends Controller
 	// Save a file's contents
 	function saveFile ($request, $view)
 	{
-		$file = $request->param('file');
+		$file = $request->post('file');
 		$contents = base64_decode($request->post('contents'));
 		
 		if ($this->canSaveFile(mb_strlen($contents)))
@@ -109,8 +109,8 @@ class APIController extends Controller
 	// Rename a file or directory
 	function renameFile ($request, $view)
 	{
-		$file = $request->param('src', null);
-		$newFile = $request->param('dest', null);
+		$file = $request->post('src', null);
+		$newFile = $request->post('dest', null);
 		
 		$view->success = $this->FileSystem->renameFile($file, $newFile);
 		$view->renderAsJSON();
@@ -119,8 +119,8 @@ class APIController extends Controller
 	// Move a file or directory
 	function moveFile ($request, $view)
 	{
-		$source = $request->param('src', null);
-		$destination = $request->param('dest', null);
+		$source = $request->post('src', null);
+		$destination = $request->post('dest', null);
 		
 		$view->success = $this->FileSystem->moveFile($source, $destination);
 		$view->renderAsJSON();
@@ -129,8 +129,8 @@ class APIController extends Controller
 	// Copy a file or directory
 	function copyFile ($request, $view)
 	{
-		$source = $request->param('src', null);
-		$destination = $request->param('dest', null);
+		$source = $request->post('src', null);
+		$destination = $request->post('dest', null);
 		
 		// Check file size limitations
 		$info = $this->FileSystem->getFileMeta($source);
@@ -148,7 +148,7 @@ class APIController extends Controller
 	// Delete a file or directory
 	function deleteFile ($request, $view)
 	{
-		$file = $request->param('file');
+		$file = $request->post('file');
 		
 		$view->success = $this->FileSystem->delete($file);
 		$view->renderAsJSON();
@@ -157,7 +157,7 @@ class APIController extends Controller
 	// Create a blank file
 	function newFile ($request, $view)
 	{
-		$file = $request->param('file');
+		$file = $request->post('file');
 		
 		$view->success = $this->FileSystem->touch($file);
 		$view->renderAsJSON();
@@ -166,7 +166,7 @@ class APIController extends Controller
 	// Create a new directory
 	function newDir ($request, $view)
 	{
-		$dir = $request->param('dir');
+		$dir = $request->post('dir');
 		
 		$view->success = $this->FileSystem->mkdir($dir);
 		$view->renderAsJSON();
