@@ -82,7 +82,7 @@ class Template
 		$line = preg_replace('/\{\{\s*@(.+?)\((.+?)\)\s*\}\}/', self::PHP_START.'print \$this->filter(\$this->$1($2));'.self::PHP_END, $line);
 		
 		// {{ @statement }}
-		$line = preg_replace('/\{\{\s*@(.+?)\s*\}\}/', self::PHP_START.'print \$this->filter(\$$1);'.self::PHP_END, $line);
+		$line = preg_replace('/\{\{\s*@(.+?)\s*\}\}/', self::PHP_START.'print \$this->filter(isset(\$$1) ? \$$1 : \'\');'.self::PHP_END, $line);
 
 		// {{ statement: }}
 		$line = preg_replace('/\{\{\s*(.+?)\:\s*\}\}/', self::PHP_START.'print \$this->$1();'.self::PHP_END, $line);
@@ -148,7 +148,11 @@ class Template
 		// Concatenate extension
 		$file .= '.tpl';
 		
-		Template::fromFile($file)->render();
+		$tpl = Template::fromFile($file);
+		
+		$tpl->data = $this->data;
+		
+		$tpl->render();
 	}
 	
 	protected function filter ($text)

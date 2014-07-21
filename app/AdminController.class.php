@@ -8,11 +8,14 @@ class AdminController extends AdminBase
 {	
 	function home ($request, $view)
 	{
+		$view->title = 'Home';
 		$view->render('home');
 	}
 	
 	function config ($request, $view)
 	{
+		$view->title = 'Configuration';
+		
 		$form = new Form($request);
 		
 		if ($request->isPost())

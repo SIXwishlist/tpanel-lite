@@ -61,6 +61,7 @@ class ClientController extends ClientBase
 	 */
 	function home ($request, $view)
 	{
+		$view->title = 'Home';
 		$this->initModel('user', 'file');
 		
 		$view->freeSpacePercent = $this->getFreeSpacePercent();
@@ -72,6 +73,7 @@ class ClientController extends ClientBase
 	 */
 	function fileManager ($request, $view)
 	{
+		$view->title = 'File Manager';
 		$this->initModel('user', 'file');
 		$dir = $request->param('dir', '');
 		
@@ -97,6 +99,7 @@ class ClientController extends ClientBase
 	 */
 	function diskUsage ($request, $view)
 	{
+		$view->title = 'Space Usage';
 		$this->initModel('user', 'file');
 		
 		// NOTE: Use Chart.js Pie chart for displaying directory usages
@@ -119,6 +122,7 @@ class ClientController extends ClientBase
 	 */
 	function settings ($request, $view)
 	{
+		$view->title = 'Account Settings';
 		$this->initModel('user');
 		
 		$confirmLevel = App::Session('Client')->get('deleteConfirm', 0);
@@ -179,6 +183,7 @@ class ClientController extends ClientBase
 	 */
 	function webEditor ($request, $view)
 	{
+		$view->title = 'Web Editor';
 		// NOTE: This uses the APIController heavily for listing files, editing, and submitting
 		$view->render('html_editor');
 	}
@@ -189,6 +194,7 @@ class ClientController extends ClientBase
 	 */
 	function backupPage ($request, $view)
 	{
+		$view->title = 'Backups';
 		$this->initModel('user', 'backup');
 		
 		if ($request->isPost())

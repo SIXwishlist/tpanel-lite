@@ -3,6 +3,7 @@
 namespace App;
 use Base\MVC\Controller;
 use Base\App;
+use Base\Form;
 
 class LoginController extends Controller
 {
@@ -34,6 +35,7 @@ class LoginController extends Controller
 	
 	function client ($request, $view)
 	{
+		$view->title = 'Login';
 		if ($request->isPost())
 		{
 			$user = $request->post('username');
@@ -53,11 +55,18 @@ class LoginController extends Controller
 				$view->message = 'Invalid username or password';
 			}
 		}
+		
+		$form = new Form($request);
+		
+		$view->username = $form->text('username');
+		$view->password = $form->password('password');
+		$view->submit = $form->submit('funcbtn1', ['value' => 'Login']);
 		$view->render('login');
 	}
 	
 	function admin ($request, $view)
 	{
+		$view->title = 'Login';
 		if ($request->isPost())
 		{
 			$user = $request->post('username');

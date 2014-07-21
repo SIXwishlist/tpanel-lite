@@ -127,8 +127,12 @@ class App
 		View::flashMessage($message);
 	}
 	
-	public static function redirect ($url)
+	public static function redirect ($url, $params = null)
 	{
+		if (substr($url, 0, 1) === '@')
+		{
+			$url = self::$router->reverseLookup(substr($url, 1), $params);
+		}
 		header('Location: '.$url);
 		self::complete();
 	}

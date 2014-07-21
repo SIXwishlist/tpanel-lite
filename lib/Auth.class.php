@@ -16,7 +16,6 @@ class Auth
 	function __construct ($group)
 	{
 		$this->session = new Session('Auth_'.$group);
-		$this->enable();
 	}
 	
 	function enabled ()

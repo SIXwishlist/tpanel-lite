@@ -5,6 +5,7 @@ namespace Base;
 class Router
 {
 	protected $routes = [];
+	protected $reversed = [];
 	
 	function load ($file)
 	{
@@ -16,6 +17,26 @@ class Router
 				$this->add($route, [$controller, $method]);
 			}
 		}
+	}
+	
+	function reverseLookup ($controller, $params = null)
+	{
+		if (!isset($this->reversed[$controller]))
+		{
+			throw new Exception('URL Not Found', sprintf('"%s" could not be found', $controller));
+		}
+		
+		$url = $this->reversed[$controller];
+		
+		if ($params !== null && is_array($params) && count($params) > 0)
+		{
+			foreach ($params as $key => $value)
+			{
+				$url = preg_replace('/\{(*|@)''\}/', $value, $url);
+			}
+		}
+		
+		return Path::web($url);
 	}
 	
 	function lookup ($route)
@@ -80,17 +101,6 @@ class Router
 	
 	function add ($route, $callable)
 	{
-		/*
-		[
-			'api' => [
-						'file' => [
-									'meta' => ['ClientController', 'metadata']
-								]
-					]
-		]
-		
-		*/
-		
 		// Remove beginning and ending slashes
 		if (substr($route, 0, 1) === '/')
 		{
@@ -106,7 +116,6 @@ class Router
 		$seg = array_pop($segments);
 		while (count($segments) > 0)
 		{
-			
 			// Match special cases
 			if (preg_match('/\{\*([A-Za-z0-9]+?)\}/', $seg, $match))
 			{

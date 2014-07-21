@@ -15,7 +15,10 @@ class Session
 	
 	function __construct ($group)
 	{
-		session_start();
+		if (!isset($_SESSION))
+		{
+			session_start();
+		}
 		$this->group = $group;
 	}
 	

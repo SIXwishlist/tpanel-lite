@@ -1,5 +1,5 @@
 <?php
-
+// COMPLETE
 /**
  * View
  *
@@ -8,6 +8,7 @@
  */
 
 namespace Base\MVC;
+use Base\App;
 
 class View
 {

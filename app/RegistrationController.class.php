@@ -21,6 +21,7 @@ class RegistrationController extends Controller
 	
 	function register ($request, $view)
 	{
+		$view->title = 'Register';
 		$form = new Form($request);
 		if ($request->isPost())
 		{
@@ -45,6 +46,7 @@ class RegistrationController extends Controller
 	
 	function activate ($request, $view)
 	{
+		$view->title = 'Activate';
 		$username = $request->param('user');
 		$activationCode = $request->param('activation');
 		
