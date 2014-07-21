@@ -14,6 +14,8 @@ class Template
 	const PHP_END = ' ?>';
 	protected $code;
 	protected $output;
+	protected $path = null;
+	protected $defaultFile = null;
 	protected $data = array();
 	protected $callbacks = array();
 	
@@ -51,6 +53,8 @@ class Template
 		$this->addFunction('theme', array($this, 'theme'));
 		$this->addFunction('url', array($this, 'url'));
 		$this->addFunction('filter', array($this, 'filter'));
+		$this->addFunction('include', array($this, 'tInclude'));
+		$this->addFunction('content', array($this, 'content'));
 	}
 
 	protected function build ()
@@ -79,6 +83,15 @@ class Template
 		
 		// {{ @statement }}
 		$line = preg_replace('/\{\{\s*@(.+?)\s*\}\}/', self::PHP_START.'print \$this->filter(\$$1);'.self::PHP_END, $line);
+
+		// {{ statement: }}
+		$line = preg_replace('/\{\{\s*(.+?)\:\s*\}\}/', self::PHP_START.'print \$this->$1();'.self::PHP_END, $line);
+
+		// {{ statement(...) }}
+		$line = preg_replace('/\{\{\s*(.+?)\((.+?)\)\s*\}\}/', self::PHP_START.'print \$this->$1($2);'.self::PHP_END, $line);
+		
+		// {{ statement }}
+		$line = preg_replace('/\{\{\s*(.+?)\s*\}\}/', self::PHP_START.'print \$$1;'.self::PHP_END, $line);
 
 		// { foreach $x as $y } or { foreach $x -> $y }
 		$line = preg_replace('/\{\s*foreach\s+(.+?)\s+(as|\-\>)\s+(.+?)\s*\}/i', self::PHP_START.'if (isset($1) && is_array($1) && count($1) > 0) foreach ($1 as $3) {'.self::PHP_END, $line);
@@ -114,6 +127,30 @@ class Template
 		return Path::theme($text);
 	}
 	
+	protected function tInclude ($file)
+	{
+		Template::fromFile($file)->render();
+	}
+	
+	protected function content ($file = null)
+	{
+		if ($file === null)
+		{
+			$file = $this->defaultFile;
+		}
+		
+		// Add path
+		if ($this->path !== null)
+		{
+			$file = $this->path.'/'.$file;
+		}
+		
+		// Concatenate extension
+		$file .= '.tpl';
+		
+		Template::fromFile($file)->render();
+	}
+	
 	protected function filter ($text)
 	{
 		return Filter::html($text);
@@ -124,6 +161,16 @@ class Template
 		$p = new Template($code);
 		$p->build();
 		return $p;
+	}
+	
+	function setPath ($path)
+	{
+		$this->path = $path;
+	}
+	
+	function setFile ($f)
+	{
+		$this->defaultFile = $f;
 	}
 	
 	function addFunction ($name, $callback)
@@ -144,9 +191,8 @@ class Template
 	
 	function _render ()
 	{
-		extract($this->data, EXTR_SKIP);
 		ob_start();
-		eval('?>'.$this->toPHP());
+		$this->render();
 		$c = ob_get_contents();
 		ob_end_clean();
 		return $c;

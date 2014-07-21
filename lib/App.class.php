@@ -77,6 +77,7 @@ class App
 		
 		$controller = '\\App\\'.$callable[0];
 		$c = new $controller();
+		call_user_func([$c, 'init'], $request, $view);
 		call_user_func([$c, $callable[1]], $request, $view);
 	}
 	
