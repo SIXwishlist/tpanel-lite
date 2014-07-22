@@ -39,6 +39,11 @@ class HTML
 		}
 	}
 	
+	public static function submit ($name, $attr = null)
+	{
+		return self::tag('input', $attr + ['type' => 'submit', 'name' => $name, 'id' => $name]);
+	}
+	
 	// Open tag
 	public static function open ($type, $attr = null)
 	{
