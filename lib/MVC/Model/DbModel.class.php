@@ -12,15 +12,41 @@ use Base\Db\Filter;
 
 class DbModel extends Model
 {
+	protected $db;
+	protected $table;
+	
+	function __construct ()
+	{
+		$this->db = App::Database($this->db);
+	}
+	
 	function filter ($key, $value)
 	{
 		// Return DB Filter
-		return new Filter(App::Database($this->db), $this->table);
+		$f = new Filter($this->db, $this->table);
+		return $f->filter($key, $value);
 	}
 	
 	function add ($data)
 	{
-	
+		$q = 'INSERT INTO `%s` (%s) VALUES (%s)';
+		$keys = '';
+		$values = '';
+		$params = [];
+		foreach ($data as $key => $value)
+		{
+			if (strlen($values) > 0)
+			{
+				$keys .= ',';
+				$values .= ',';
+			}
+			$keys .= sprintf('`%s`', $key);
+			$values .= '?';
+			$params[] = $value;
+		}
+		$query = sprintf($q, $this->table, $keys, $values);
+		$q = $this->db->sql($query);
+		return $q->execute($params);
 	}
 	
 	function delete ($key)

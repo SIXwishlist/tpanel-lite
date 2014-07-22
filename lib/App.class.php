@@ -17,6 +17,7 @@ class App
 	protected static $auth = array();
 	protected static $app = null;
 	protected static $router = null;
+	protected static $dbs = array();
 	
 	public static function route (&$request)
 	{
@@ -120,6 +121,15 @@ class App
 			self::$auth[$name] = new Auth($name);
 		}
 		return self::$auth[$name];
+	}
+	
+	public static function Database ($name)
+	{
+		if (!isset(self::$dbs[$name]))
+		{
+			self::$dbs[$name] = Db::fromConfig($name);
+		}
+		return self::$dbs[$name];
 	}
 	
 	public static function flash ($message)

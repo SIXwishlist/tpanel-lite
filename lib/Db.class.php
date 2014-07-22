@@ -17,6 +17,20 @@ class Db
 	protected $pdo;
 	protected $rowCount = 0;
 	
+	public static function fromConfig ($name)
+	{
+		$info = parse_ini_file(App::Data('databases/'.$name.'.conf')->getFullPath());
+		if (!isset($info['type']))
+		{
+			$type = 'mysql';
+		}
+		else
+		{
+			$type = $info['type'];
+		}
+		return new Db($info['server'], $info['username'], $info['password'], $info['database'], $type);
+	}
+	
 	function __construct ($host, $user, $pass, $db, $type = 'mysql')
 	{
 		$connString = sprintf('%s:host=%s;dbname=%s', $type, $host, $db);
