@@ -16,6 +16,7 @@ class Db
 	
 	protected $pdo;
 	protected $rowCount = 0;
+	protected $tablePrefix = null;
 	
 	public static function fromConfig ($name)
 	{
@@ -28,13 +29,23 @@ class Db
 		{
 			$type = $info['type'];
 		}
-		return new Db($info['server'], $info['username'], $info['password'], $info['database'], $type);
+		$db = new Db($info['server'], $info['username'], $info['password'], $info['database'], $type);
+		if (isset($info['prefix']))
+		{
+			$db->setPrefix($info['prefix']);
+		}
+		return $db;
 	}
 	
 	function __construct ($host, $user, $pass, $db, $type = 'mysql')
 	{
 		$connString = sprintf('%s:host=%s;dbname=%s', $type, $host, $db);
 		$this->pdo = new PDO($connString, $user, $pass);
+	}
+	
+	function setPrefix ($p)
+	{
+		$this->tablePrefix = $p;
 	}
 	
 	function rowsAffected ()
@@ -44,6 +55,11 @@ class Db
 	
 	function sql ($sql, $fetchMode = self::NORMAL)
 	{
+		if ($this->tablePrefix !== null)
+		{
+			$sql = preg_replace('/\[(.+?)\]/', $this->tablePrefix.'$1', $sql);
+		}
+		
 		$stmt = $this->pdo->prepare($sql);
 		switch ($fetchMode)
 		{

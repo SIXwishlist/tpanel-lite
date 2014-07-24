@@ -65,13 +65,33 @@ class User extends DbModel
 	function isClient ($user, $pass)
 	{
 		$data = $this->filter('username', $user)->filter('password', ['MD5(?)' => [$pass]]);
-		return ($data->min(1) && $data->data('user_level') === 1);
+		
+		$result = ($data->min(1) && $data->data('user_level') >= 1);
+		if ($result)
+		{
+			$userId = $data->data('user_id');
+		}
+		else
+		{
+			$userId = null;
+		}
+		return [$result, $userId];
 	}
 	
 	function isAdmin ($user, $pass)
 	{
 		$data = $this->filter('username', $user)->filter('password', ['MD5(?)' => [$pass]]);
-		return ($data->min(1) && $data->data('user_level') === 2);
+		
+		$result = ($data->min(1) && $data->data('user_level') === 2);
+		if ($result)
+		{
+			$userId = $data->data('user_id');
+		}
+		else
+		{
+			$userId = null;
+		}
+		return [$result, $userId];
 	}
 	
 	function validateRegistration ($data)
@@ -163,7 +183,7 @@ class User extends DbModel
 	function count ()
 	{
 		// NOTE: DB call
-		return $this->row_count();
+		return $this->rowCount();
 	}
 	
 	function deleteUser ($userId)

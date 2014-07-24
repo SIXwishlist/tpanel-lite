@@ -8,6 +8,9 @@
  */
 
 namespace Base\IO;
+use \RecursiveDirectoryIterator;
+use \RecursiveIteratorIterator;
+use \DirectoryIterator;
 
 class Dir
 {
@@ -60,6 +63,19 @@ class Dir
 				}
 			}
 			return true;
+		}
+	}
+	
+	public static function iterate ($dir, $recursive = false)
+	{
+		if ($recursive === true)
+		{
+			$iterator = new RecursiveDirectoryIterator($dir);
+			return new RecursiveIteratorIterator($iterator, RecursiveIteratorIterator::SELF_FIRST);
+		}
+		else
+		{
+			return new DirectoryIterator($dir);
 		}
 	}
 	
@@ -163,7 +179,7 @@ class Dir
 		return $size;
 	}
 	
-	public static function size ($path, $recursive = false)
+	public static function getSize ($path, $recursive = false)
 	{
 		$d = new Dir($path);
 		return $d->size($recursive);

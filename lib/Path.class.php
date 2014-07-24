@@ -27,14 +27,7 @@ class Path
 	
 	public static function initURI ()
 	{
-		if (!isset($_SERVER['PATH_INFO']))
-		{
-			$uri = '/';
-		}
-		else
-		{
-			$uri = str_replace($_SERVER['PATH_INFO'], '', $_SERVER['REQUEST_URI']);
-		}
+		$uri = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
 		
 		if (substr($uri, -1) !== '/')
 		{

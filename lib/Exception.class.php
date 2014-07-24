@@ -12,22 +12,15 @@ namespace Base;
 class Exception extends \Exception
 {
 	protected $title;
-	protected $message;
 	
 	function __construct ($title, $message)
 	{
-		parent::__construct($title);
+		parent::__construct($message);
 		$this->title = $title;
-		$this->message = $message;
 	}
 	
 	function getTitle ()
 	{
 		return $this->title;
-	}
-	
-	function getMessage ()
-	{
-		return $this->message;
 	}
 }

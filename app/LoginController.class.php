@@ -42,7 +42,7 @@ class LoginController extends Controller
 			$pass = $request->post('password');
 			
 			list($result, $userId) = $this->User->isClient($user, $pass);
-			if ($result)
+			if ($result === true)
 			{
 				App::Auth('Client')->enable();
 				App::Auth('Client')->set('username', $user);

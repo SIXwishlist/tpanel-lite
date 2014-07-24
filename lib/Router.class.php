@@ -32,7 +32,7 @@ class Router
 		{
 			foreach ($params as $key => $value)
 			{
-				$url = preg_replace('/\{(*|@)''\}/', $value, $url);
+				$url = preg_replace('/\{(*|@)'.$key.'\}/', $value, $url);
 			}
 		}
 		
@@ -110,6 +110,8 @@ class Router
 		{
 			$route = substr($route, 0, -1);
 		}
+		
+		$this->reversed[$callable[0].'::'.$callable[1]] = $route;
 		
 		$segments = array_reverse(explode('/', $route));
 		$tmp = &$this->routes;

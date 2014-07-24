@@ -32,7 +32,7 @@ class FileSystem extends Model
 	function used ()
 	{
 		// true = recursive
-		return Dir::size($this->getUserDir(), true);
+		return Dir::getSize($this->getUserDir(), true);
 	}
 	
 	protected function filterDir ($dir)

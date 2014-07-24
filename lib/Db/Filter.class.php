@@ -42,10 +42,24 @@ class Filter
 			{
 				if (!$first)
 				{
-					$sql = ' AND ';
+					$sql .= ' AND ';
 				}
 				$first = false;
-				$sql .= sprintf('`%s` = ?', $combo[0]);
+				if (is_array($combo[1]))
+				{
+					if (isset($combo[1][0]))
+					{
+						$sql .= sprintf('`%s` = %s', $combo[0], $combo[1][0]);
+					}
+					else
+					{
+						$sql .= sprintf('`%s` = %s', $combo[0], key($combo[1]));
+					}
+				}
+				else
+				{
+					$sql .= sprintf('`%s` = ?', $combo[0]);
+				}
 			}
 		}
 		if ($firstRow === true)
@@ -69,7 +83,21 @@ class Filter
 					$sql = ' AND ';
 				}
 				$first = false;
-				$sql .= sprintf('`%s` = ?', $combo[0]);
+				if (is_array($combo[1]))
+				{
+					if (isset($combo[1][0]))
+					{
+						$sql .= sprintf('`%s` = %s', $combo[0], $combo[1][0]);
+					}
+					else
+					{
+						$sql .= sprintf('`%s` = %s', $combo[0], key($combo[1]));
+					}
+				}
+				else
+				{
+					$sql .= sprintf('`%s` = ?', $combo[0]);
+				}
 			}
 		}
 		return $sql;
@@ -82,7 +110,23 @@ class Filter
 			$result = array();
 			foreach ($this->filters as $combo)
 			{
-				$result[] = $combo[1];
+				$value = $combo[1];
+				if (is_array($value))
+				{
+					if (isset($value[0]))
+					{
+						$result[] = $value[0];
+					}
+					else
+					{
+						// Expression with prepared segment
+						$result = array_merge($result, current($value));
+					}
+				}
+				else
+				{
+					$result[] = $value;
+				}
 			}
 			return $result;
 		}
@@ -100,7 +144,7 @@ class Filter
 			$q = $this->db->sql($this->getSQL(true), Db::LAZY);
 			$q->execute($this->getParams());
 			
-			$this->queryData = $q->fetch();
+			$this->queryData = $q->fetch(\PDO::FETCH_LAZY);
 		}
 	}
 	
@@ -122,9 +166,18 @@ class Filter
 	{
 		$countSQL = $this->getSQL(false, true);
 		$q = $this->db->sql($countSQL);
-		$q->execute($this->getParams());
+		$params = $this->getParams();
 		
-		$data = $q->fetch();
+		if (is_array($params) && count($params) > 0)
+		{
+			$q->execute($params);
+		}
+		else
+		{
+			$q->execute();
+		}
+		
+		$data = $q->fetch(\PDO::FETCH_ASSOC);
 		if (isset($data['row_count']))
 		{
 			return (int)$data['row_count'];

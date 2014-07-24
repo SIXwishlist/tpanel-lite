@@ -78,7 +78,7 @@ class Backup extends DbModel
 		$this->User->setUser($this->userId);
 		$zip = new Zip(App::Data($this->getBackupFile())->getFullPath(), 'r');
 		// true = overwrite duplicates
-		$result = $zip->extractAll($this->User->getPath(), true);
+		$result = $zip->extractAll($this->User->getPath());
 		$zip->close();
 		return $result;
 	}
@@ -89,7 +89,6 @@ class Backup extends DbModel
 		if (File::isFile($file))
 		{
 			$zip = new Zip($file, 'r');
-			// true = recursive
 			$files = $zip->listAll(true);
 			$zip->close();
 			return $files;

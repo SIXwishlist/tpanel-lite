@@ -99,6 +99,9 @@ class Template
 		// { end }
 		$line = preg_replace('/\{\s*end\s*\}/i', self::PHP_START.'}'.self::PHP_END, $line);
 		
+		// { display(var) }
+		$line = preg_replace('/\{\s*display\s*\((.+?)\)\s*\}/i', self::PHP_START.'if (isset(\$$1)) {'.self::PHP_END, $line);
+		
 		// { if $x }
 		$line = preg_replace('/\{\s*if\s+([A-Za-z0-9\_]+?)\s*\}/i', self::PHP_START.'if (isset($1)) {'.self::PHP_END, $line);
 

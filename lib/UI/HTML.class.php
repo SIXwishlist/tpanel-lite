@@ -7,6 +7,7 @@
  */
 
 namespace Base\UI;
+use Base\Filter;
 
 class HTML
 {
