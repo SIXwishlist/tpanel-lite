@@ -25,7 +25,7 @@ class Auth
 	
 	function get ($key)
 	{
-		return $this->session->set($key, null);
+		return $this->session->get($key, null);
 	}
 	
 	function set ($key, $value)

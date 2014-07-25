@@ -11,6 +11,7 @@ namespace Base\IO;
 use \RecursiveDirectoryIterator;
 use \RecursiveIteratorIterator;
 use \DirectoryIterator;
+use Base\Exception;
 
 class Dir
 {
@@ -158,6 +159,10 @@ class Dir
 	
 	function size ($recursive = false)
 	{
+		if (!$this->exists())
+		{
+			throw new Exception('Directory Not Found', 'The specified directory could not be traversed as it does not exist');
+		}
 		$size = 0;
 		if ($recursive === true)
 		{

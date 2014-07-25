@@ -7,6 +7,7 @@
  */
 
 namespace Base;
+use Base\IO\File;
 
 class Template
 {
@@ -132,7 +133,14 @@ class Template
 	
 	protected function tInclude ($file)
 	{
-		Template::fromFile($file)->render();
+		try
+		{
+			Template::fromFile($file)->render();
+		}
+		catch (Exception $e)
+		{
+			App::displayException($e);
+		}
 	}
 	
 	protected function content ($file = null)
@@ -151,11 +159,18 @@ class Template
 		// Concatenate extension
 		$file .= '.tpl';
 		
-		$tpl = Template::fromFile($file);
+		try
+		{
+			$tpl = Template::fromFile($file);
 		
-		$tpl->data = $this->data;
+			$tpl->data = $this->data;
 		
-		$tpl->render();
+			$tpl->render();
+		}
+		catch (Exception $e)
+		{
+			App::displayException($e);
+		}
 	}
 	
 	protected function filter ($text)
@@ -207,6 +222,10 @@ class Template
 	
 	public static function fromFile ($file)
 	{
+		if (!File::isFile($file))
+		{
+			throw new Exception('File Not Found', sprintf('Template file "%s" could not be loaded', (new File($file))->basename()));
+		}
 		$contents = file_get_contents($file);
 		return self::compile($contents);
 	}

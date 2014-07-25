@@ -18,6 +18,7 @@ class App
 	protected static $app = null;
 	protected static $router = null;
 	protected static $dbs = array();
+	protected static $models = array();
 	
 	public static function route (&$request)
 	{
@@ -57,14 +58,17 @@ class App
 		}
 		catch (Exception $e)
 		{
-			self::displayException($e);
+			self::displayException($e, false);
 		}
 	}
 	
-	public static function displayException ($e)
+	public static function displayException ($e, $continue = true)
 	{
 		print "<fieldset><legend>".$e->getTitle()."</legend><p>".$e->getMessage()."</p></fieldset>";
-		self::complete();
+		if ($continue !== true)
+		{
+			self::complete();
+		}
 	}
 	
 	public static function complete ()
@@ -130,6 +134,16 @@ class App
 			self::$dbs[$name] = Db::fromConfig($name);
 		}
 		return self::$dbs[$name];
+	}
+	
+	public static function Model ($name)
+	{
+		if (!isset(self::$models[$name]))
+		{
+			$model = '\\App\\Models\\'.$name;
+			self::$models[$name] = new $model();
+		}
+		return self::$models[$name];
 	}
 	
 	public static function flash ($message)

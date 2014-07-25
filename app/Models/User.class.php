@@ -82,7 +82,7 @@ class User extends DbModel
 	{
 		$data = $this->filter('username', $user)->filter('password', ['MD5(?)' => [$pass]]);
 		
-		$result = ($data->min(1) && $data->data('user_level') === 2);
+		$result = ($data->min(1) && (int)$data->data('user_level') === 2);
 		if ($result)
 		{
 			$userId = $data->data('user_id');

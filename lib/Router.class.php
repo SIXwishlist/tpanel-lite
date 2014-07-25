@@ -60,6 +60,7 @@ class Router
 		$params = array();
 		
 		$segments = array_reverse(explode('/', $route));
+		
 		$tmp = &$this->routes;
 		while (count($segments) > 0)
 		{
@@ -68,24 +69,31 @@ class Router
 			// Match
 			if (isset($tmp[$seg]))
 			{
-				$tmp = $tmp[$seg];
+				$tmp = &$tmp[$seg];
 			}
 			elseif (isset($tmp['@']))
 			{
 				$params[$tmp['@']['name']] = $seg;
 				
-				$tmp = $tmp['@']['next'];
+				$tmp = &$tmp['@']['next'];
 			}
 			elseif (isset($tmp['*']))
 			{
 				$params[$tmp['*']['name']] = implode('/', array_reverse($segments));
-				$tmp = $tmp['*']['next'];
+				$tmp = &$tmp['*']['next'];
 				$segments = null;
 			}
 			else
 			{
 				return false;
 			}
+		}
+		
+		// Check for ending wildcard param
+		if (!isset($tmp[0]) && !isset($tmp[1]) && isset($tmp['*']))
+		{
+			$params[$tmp['*']['name']] = implode('/', array_reverse($segments));
+			$tmp = &$tmp['*']['next'];
 		}
 		
 		// Not a callable
@@ -115,11 +123,12 @@ class Router
 		
 		$segments = array_reverse(explode('/', $route));
 		$tmp = &$this->routes;
+		
 		$seg = array_pop($segments);
 		while (count($segments) > 0)
 		{
 			// Match special cases
-			if (preg_match('/\{\*([A-Za-z0-9]+?)\}/', $seg, $match))
+			if (preg_match('/\{\*(.+?)\}/', $seg, $match))
 			{
 				// Named wildcard
 				if (!isset($tmp['*']))
@@ -128,7 +137,7 @@ class Router
 				}
 				$tmp = &$tmp['*']['next'];
 			}
-			elseif (preg_match('/\{([A-Za-z0-9]+?)\}/', $seg, $match))
+			elseif (preg_match('/\{(.+?)\}/', $seg, $match))
 			{
 				// Named parameter
 				if (!isset($tmp['@']))
@@ -150,6 +159,18 @@ class Router
 			
 			$seg = array_pop($segments);
 		}
-		$tmp[$seg] = $callable;
+		
+		if (preg_match('/\{\*(.+?)\}/', $seg, $match))
+		{
+			$tmp['*'] = ['next' => $callable, 'name' => $match[1]];
+		}
+		elseif (preg_match('/\{(.+?)\}/', $seg, $match))
+		{
+			$tmp['@'] = ['next' => $callable, 'name' => $match[1]];
+		}
+		else
+		{
+			$tmp[$seg] = $callable;
+		}
 	}
 }

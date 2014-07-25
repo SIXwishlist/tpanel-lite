@@ -73,11 +73,11 @@ class LoginController extends Controller
 			$pass = $request->post('password');
 			
 			list($result, $userId) = $this->User->isAdmin($user, $pass);
-			if ($result)
+			if ($result === true)
 			{
-				App::Auth('Client')->enable();
-				App::Auth('Client')->set('username', $user);
-				App::Auth('Client')->set('userId', $userId);
+				App::Auth('Admin')->enable();
+				App::Auth('Admin')->set('username', $user);
+				App::Auth('Admin')->set('userId', $userId);
 				App::flash('Login successful');
 				App::redirect('@AdminController::home');
 			}
@@ -86,6 +86,11 @@ class LoginController extends Controller
 				$view->message = 'Invalid username or password';
 			}
 		}
+		$form = new Form($request);
+		
+		$view->username = $form->text('username');
+		$view->password = $form->password('password');
+		$view->submit = $form->submit('funcbtn1', ['value' => 'Login']);
 		$view->render('login');
 	}
 }

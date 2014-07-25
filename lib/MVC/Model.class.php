@@ -8,18 +8,22 @@
  */
 
 namespace Base\MVC;
+use Base\App;
 
 abstract class Model
 {
-	protected $models = array();
+	function __construct ()
+	{
+		$this->init();
+	}
+	
+	function init ()
+	{
+	
+	}
 	
 	function __get ($modelName)
 	{
-		if (!isset($this->models[$modelName]))
-		{
-			$modelClass = '\\App\\Models\\'.$modelName;
-			$this->models[$modelName] = new $modelClass();
-		}
-		return $this->models[$modelName];
+		return App::Model($modelName);
 	}
 }

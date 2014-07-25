@@ -25,6 +25,7 @@ class AdminController extends AdminBase
 		
 		$form->assign($this->Config->toArray());
 		$view->form = $form;
+		$view->render('config');
 	}
 	
 	function logout ($request, $view)

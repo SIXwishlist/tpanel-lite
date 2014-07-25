@@ -15,10 +15,16 @@ class Form
 {
 	protected $request;
 	protected $responsive = true;
+	protected $data = null;
 	
 	function __construct ($request)
 	{
 		$this->request = $request;
+	}
+	
+	function assign ($data)
+	{
+		$this->data = $data;
 	}
 	
 	function setResponsive ($r)
@@ -48,6 +54,10 @@ class Form
 		if ($this->responsive && $this->request->isPost())
 		{
 			$attr['value'] = $this->request->post($name);
+		}
+		elseif ($this->data !== null && isset($this->data[$name]))
+		{
+			$attr['value'] = $this->data[$name];
 		}
 		return HTML::tag('input', $attr);
 	}

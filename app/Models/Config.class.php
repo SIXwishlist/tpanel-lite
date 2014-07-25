@@ -30,6 +30,7 @@ class Config extends Model
 		
 		if ($this->conf === false || !isset($this->conf[$key]))
 		{
+			echo $key;
 			throw new Exception('Configuration Error', 'The configuration file is corrupted');
 		}
 		return $this->conf[$key];
