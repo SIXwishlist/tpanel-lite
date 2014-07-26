@@ -128,7 +128,7 @@ class Dir
 		{
 			if ($obj->isFile())
 			{
-				$result[] = ['size' => $obj->getSize(), 'name' => $obj->getBasename()];
+				$result[] = ['size' => $obj->getSize(), 'name' => $obj->getBasename(), 'info' => $obj];
 			}
 		}
 		
