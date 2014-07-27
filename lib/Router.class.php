@@ -32,7 +32,7 @@ class Router
 		{
 			foreach ($params as $key => $value)
 			{
-				$url = preg_replace('/\{(*|@)'.$key.'\}/', $value, $url);
+				$url = preg_replace('/\{(+|)'.$key.'\}/', $value, $url);
 			}
 		}
 		
@@ -130,7 +130,7 @@ class Router
 		while (count($segments) > 0)
 		{
 			// Match special cases
-			if (preg_match('/\{\*(.+?)\}/', $seg, $match))
+			if (preg_match('/\{\+(.+?)\}/', $seg, $match))
 			{
 				// Named wildcard
 				if (!isset($tmp['*']))
@@ -162,7 +162,7 @@ class Router
 			$seg = array_pop($segments);
 		}
 		
-		if (preg_match('/\{\*(.+?)\}/', $seg, $match))
+		if (preg_match('/\{\+(.+?)\}/', $seg, $match))
 		{
 			$tmp['*'] = ['next' => $callable, 'name' => $match[1]];
 		}

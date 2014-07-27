@@ -128,7 +128,7 @@ class DbModel extends Model
 		return $q->execute(array_merge($updateValues, [$id]));
 	}
 	
-	function display ($page, $rowCount)
+	function display ($rowCount, $page)
 	{
 		$this->display = [$page * $rowCount, $rowCount];
 		return $this;
@@ -159,7 +159,7 @@ class DbModel extends Model
 		$q = $this->db->sql(sprintf('SELECT COUNT(*) as row_count FROM `%s`', $this->table));
 		if ($q->execute())
 		{
-			return $q->fetch(\PDO::FETCH_ASSOC)['row_count'];
+			return (int)$q->fetch(\PDO::FETCH_ASSOC)['row_count'];
 		}
 		else
 		{

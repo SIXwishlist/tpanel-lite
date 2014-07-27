@@ -6,9 +6,11 @@ class UserController extends AdminBase
 {
 	function listUsers ($request, $view)
 	{
-		$page = $request->param('page', 0);
+		$page = (int)$request->param('page', 0);
 		$view->users = $this->User->listUsers($page);
-		$view->pages = $this->Widget->Paginator(['page' => $page, 'count' => $this->User->count(), 'perPage' => $this->User->perPage]);
+		$view->page = $page;
+		$view->count = (int)$this->User->count();
+		$view->perPage = (int)$this->User->perPage;
 		$view->renderAsJSON();
 	}
 	
@@ -40,6 +42,8 @@ class UserController extends AdminBase
 		
 		$view->success = $this->User->modify($userId, $request->postArray());
 		$view->message = $this->User->message;
+		
+		$view->renderAsJSON();
 	}
 	
 	function getUser ($request, $view)
@@ -48,6 +52,7 @@ class UserController extends AdminBase
 		
 		// NOTE: Syntactic sugar -- fallback($this->User->get($userId))->toArray() => false if "get" returns false?
 		$user = $this->User->get($userId);
+		$view->userId = $userId;
 		if (!$user)
 		{
 			$view->user = false;
@@ -57,5 +62,7 @@ class UserController extends AdminBase
 			$view->user = $user->toArray();
 		}
 		$view->message = $this->User->message;
+		
+		$view->renderAsJSON();
 	}
 }

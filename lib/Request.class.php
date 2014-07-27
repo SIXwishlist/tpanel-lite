@@ -48,7 +48,7 @@ class Request
 	
 	function param ($key, $default = null)
 	{
-		return isset($this->params[$key]) ? $this->params[$key] : $default;
+		return isset($this->params[$key]) && $this->params[$key] != '' ? $this->params[$key] : $default;
 	}
 	
 	function posted ($key)

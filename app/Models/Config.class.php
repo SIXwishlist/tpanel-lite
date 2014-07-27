@@ -16,8 +16,8 @@ class Config extends Model
 	{
 		$this->conf = null;
 		$this->keys = ['web_host_name', 'db_server', 'db_user', 'db_pass',
-		               'db_name', 'db_port', 'free_space', 'admin_email',
-					   'user_dir'];
+		               'db_name', 'db_port', 'db_prefix', 'free_space',
+					   'admin_email', 'theme', 'user_dir'];
 		$this->file = App::Data('tpanel.conf')->getFullPath();
 	}
 	
@@ -30,7 +30,6 @@ class Config extends Model
 		
 		if ($this->conf === false || !isset($this->conf[$key]))
 		{
-			echo $key;
 			throw new Exception('Configuration Error', 'The configuration file is corrupted');
 		}
 		return $this->conf[$key];
