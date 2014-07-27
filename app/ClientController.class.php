@@ -105,7 +105,7 @@ class ClientController extends ClientBase
 		// NOTE: Use Chart.js Pie chart for displaying directory usages
 		$view->usageData = $this->FileSystem->usageAsJSON();
 		$view->usage = Filter::fileSize($this->FileSystem->used());
-		if ($this->User->availableSpace())
+		if ($this->User->availableSpace() == 0)
 		{
 			$view->available = 'Unlimited';
 		}

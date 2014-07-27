@@ -126,9 +126,9 @@ class Dir
 		$files = new DirectoryIterator($this->dir);
 		foreach ($files as $obj)
 		{
-			if ($obj->isFile())
+			if ($obj->isFile() || ($obj->getBasename() != '.' && $obj->getBasename() != '..'))
 			{
-				$result[] = ['size' => $obj->getSize(), 'name' => $obj->getBasename(), 'info' => $obj];
+				$result[] = ['size' => $obj->getSize(), 'name' => $obj->getBasename(), 'info' => clone $obj];
 			}
 		}
 		
@@ -136,17 +136,52 @@ class Dir
 		{
 			case self::SIZE:
 				usort($result, function ($row1, $row2) {
-					return $row1['size'] < $row2['size'];
+					if ($row1['info']->isDir() === $row2['info']->isDir())
+					{
+						return $row1['size'] < $row2['size'] ? -1 : 1;
+					}
+					else
+					{
+						return $row1['info']->isDir() ? -1 : 1;
+					}
 				});
 				return $result;
 			case self::SIZE_DESC:
 				usort($result, function ($row1, $row2) {
-					return $row1['size'] > $row2['size'];
+					if ($row1['info']->isDir() === $row2['info']->isDir())
+					{
+						return $row1['size'] > $row2['size'] ? -1 : 1;
+					}
+					else
+					{
+						return $row1['info']->isDir() ? 1 : -1;
+					}
 				});
 				return $result;
 			case self::FILENAME_DESC:
-				return array_reverse($result);
+				usort($result, function ($row1, $row2) {
+					if ($row1['info']->isDir() === $row2['info']->isDir())
+					{
+						return -strcmp($row1['name'], $row2['name']);
+					}
+					else
+					{
+						return $row1['info']->isDir() ? 1 : -1;
+					}
+				});
+				return $result;
 			case self::FILENAME:
+				usort($result, function ($row1, $row2) {
+					if ($row1['info']->isDir() === $row2['info']->isDir())
+					{
+						return strcmp($row1['name'], $row2['name']);
+					}
+					else
+					{
+						return $row1['info']->isDir() ? -1 : 1;
+					}
+				});
+				return $result;
 			default:
 				return $result;
 		}

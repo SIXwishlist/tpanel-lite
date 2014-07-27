@@ -3,6 +3,7 @@
 namespace App;
 use Base\MVC\Controller;
 use Base\App;
+use Base\Path;
 
 class ClientBase extends Controller
 {
@@ -23,7 +24,7 @@ class ClientBase extends Controller
 	{
 		if (!App::Auth('Client')->enabled())
 		{
-			App::Session('Redirect')->set('url', $request->URL());
+			App::Session('Redirect')->set('url', Path::web($request->URL()));
 			App::flash('You must be logged in to use this system');
 			App::redirect('@LoginController::client');
 		}

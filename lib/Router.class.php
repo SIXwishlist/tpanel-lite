@@ -62,6 +62,7 @@ class Router
 		$segments = array_reverse(explode('/', $route));
 		
 		$tmp = &$this->routes;
+		
 		while (count($segments) > 0)
 		{
 			$seg = array_pop($segments);
@@ -79,7 +80,7 @@ class Router
 			}
 			elseif (isset($tmp['*']))
 			{
-				$params[$tmp['*']['name']] = implode('/', array_reverse($segments));
+				$params[$tmp['*']['name']] = implode('/', array_merge([$seg], array_reverse($segments)));
 				$tmp = &$tmp['*']['next'];
 				$segments = null;
 			}
@@ -94,6 +95,7 @@ class Router
 		{
 			$params[$tmp['*']['name']] = implode('/', array_reverse($segments));
 			$tmp = &$tmp['*']['next'];
+			$segments = null;
 		}
 		
 		// Not a callable

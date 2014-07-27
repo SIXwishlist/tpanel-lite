@@ -189,8 +189,15 @@ class FileSystem extends Model
 		$dir = $this->getUserDir().$this->filterDir($dir);
 		$d = new Dir($dir);
 		
-		// Sort by filename
-		return $d->listAll(Dir::FILENAME);
+		if ($d->exists())
+		{
+			// Sort by filename
+			return $d->listAll(Dir::FILENAME);
+		}
+		else
+		{
+			return false;
+		}
 	}
 	
 	function destroy ()
