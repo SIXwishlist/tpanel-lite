@@ -13,7 +13,7 @@ use Base\App;
 class View
 {
 	protected static $theme = null;
-	protected static $adapter = null;
+	public static $adapter = null;
 	protected $data = array();
 	protected $path = null;
 	

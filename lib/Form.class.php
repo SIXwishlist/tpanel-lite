@@ -1,5 +1,5 @@
 <?php
-// COMPLETE
+
 /**
  * Form
  *
@@ -69,6 +69,45 @@ class Form
 			$attr['rows'] = 5;
 		}
 		return $this->combo($name, $items, $selected, $attr);
+	}
+	
+	function radio ($name, $value, $attr = null)
+	{
+		$attr += ['type' => 'radio'];
+		return $this->checkedItem($name, $value, $attr);
+	}
+	
+	function checkbox ($name, $attr = null)
+	{
+		$attr += ['type' => 'checkbox'];
+		return $this->hiddenCheckbox($name, '0').$this->checkedItem($name, '1', $attr);
+	}
+	
+	protected function hiddenCheckbox ($name, $value)
+	{
+		return HTML::tag('input', ['type' => 'hidden', 'name' => $name, 'value' => $value]);
+	}
+	
+	protected function checkedItem ($name, $value, $attr = null)
+	{
+		$attr += ['name' => $name, 'id' => $name, 'value' => $value];
+		if ($this->responsive && $this->request->isPost() && $this->request->post($name) !== null)
+		{
+			$val = $this->request->post($name);
+			if (is_array($val) && in_array($value, $val))
+			{
+				$attr['checked'] = 'checked';
+			}
+			elseif (strcmp($val, $value) === 0)
+			{
+				$attr['checked'] = 'checked';
+			}
+			elseif (isset($attr['checked']))
+			{
+				unset($attr['checked']);
+			}
+		}
+		return HTML::tag('input', $attr);
 	}
 	
 	function combo ($name, $items, $selected = null, $attr = null)

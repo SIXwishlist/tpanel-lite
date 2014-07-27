@@ -1,5 +1,5 @@
 <?php
-// COMPLETE
+
 /**
  * DbModel
  *
@@ -125,7 +125,7 @@ class DbModel extends Model
 			}
 		}
 		$q = $this->db->sql(sprintf('UPDATE `%s` SET %s WHERE `%s` = ?', $this->table, $updates, $this->primaryKey));
-		return $q->execute($updateValues + [$id]);
+		return $q->execute(array_merge($updateValues, [$id]));
 	}
 	
 	function display ($page, $rowCount)

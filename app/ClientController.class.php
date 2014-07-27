@@ -167,9 +167,11 @@ class ClientController extends ClientBase
 				}
 			}
 		}
+		$config = $this->User->getConfig();
+		$view->config = $config;
 		
 		$form = new Form($request);
-		$form->assign($this->User->getConfig());
+		$form->assign($config);
 		
 		// Display a warning to the user if they click "Remove"
 		$view->warning = ($confirmLevel === 1);

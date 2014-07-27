@@ -224,7 +224,7 @@ class FileSystem extends Model
 					$subdir = new Dir($d->getDir().'/'.$file['name']);
 					$size = $subdir->size(true);
 				}
-				$result[] = ['name' => $file['name'], 'size' => $size];
+				$result[] = ['label' => $file['name'], 'value' => $size, 'color' => '#dd0000'];
 			}
 		}
 		return json_encode($result, true);
