@@ -7,7 +7,7 @@
   <body>
     <div class="page">
 	  <div class="header">
-	    <a href="{{ @url('/') }}"><h1><span class="blue">tPanel</span> <span class="green">Lite</span></h1></a>
+	    <a href="{{ @url('/admin/') }}"><h1><span class="blue">tPanel</span> <span class="green">Lite</span></h1></a>
 	  </div>
 	  <div class="content">
 	    {{ content: }}

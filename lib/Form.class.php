@@ -13,6 +13,7 @@ use Base\UI\HTML;
 
 class Form
 {
+	protected $method = 'post';
 	protected $request;
 	protected $responsive = true;
 	protected $data = null;
@@ -35,6 +36,16 @@ class Form
 	function isResponsive ()
 	{
 		return $this->responsive;
+	}
+	
+	function open ()
+	{
+		return HTML::open('form', ['method' => $this->method]);
+	}
+	
+	function close ()
+	{
+		return HTML::close('form');
 	}
 	
 	function text ($name, $attr = null)
