@@ -70,7 +70,9 @@ class Backup extends DbModel
 		$zip = new Zip(App::Data($this->getBackupFile())->getFullPath(), 'w');
 		// true = recursive
 		$zip->addDirectory($this->User->getPath(), true);
-		return $zip->close();
+		$zipResult = $zip->close();
+		$dbResult = $this->set($this->userId, ['backup_time' => ['NOW()']]);
+		return $zipResult && $dbResult;
 	}
 	
 	function restore ()

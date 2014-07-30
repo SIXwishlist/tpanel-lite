@@ -29,16 +29,37 @@ class Zip
 	
 	function addDirectory ($dir, $recursive = false)
 	{
-		$files = Dir::iterate($dir, $recursive === true);
-		foreach ($files as $f)
+		if ($recursive === true)
 		{
-			if ($f->isDir())
+			$files = Dir::iterate($dir, true);
+			foreach ($files as $f)
 			{
-				$this->zip->addEmptyDir($f->getSubPathName());
+				if (!$files->isDot())
+				{
+					if ($f->isDir())
+					{
+						$this->zip->addEmptyDir($files->getSubPathName());
+					}
+					else
+					{
+						$this->zip->addFile($f->getPathname(), $files->getSubPathName());
+					}
+				}
 			}
-			else
+		}
+		else
+		{
+			$files = Dir::iterate($dir, false);
+			foreach ($files as $f)
 			{
-				$this->zip->addFile($f->getPathname(), $f->getSubPathName());
+				if ($f->isDir())
+				{
+					$this->zip->addEmptyDir('');
+				}
+				else
+				{
+					$this->zip->addFile($f->getPathname());
+				}
 			}
 		}
 	}

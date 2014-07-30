@@ -1,5 +1,5 @@
 <?php
-// COMPLETE
+
 /**
  * Session
  *
@@ -12,11 +12,13 @@ namespace Base;
 class Session
 {
 	protected $group;
+	protected static $started = false;
 	
 	function __construct ($group)
 	{
-		if (!isset($_SESSION))
+		if (!isset($_SESSION) && !self::$started)
 		{
+			self::$started = true;
 			session_start();
 		}
 		$this->group = $group;

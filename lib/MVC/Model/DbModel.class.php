@@ -110,7 +110,7 @@ class DbModel extends Model
 			{
 				if (isset($value[0]))
 				{
-					$updates .= current($value);
+					$updates .= sprintf('`%s` = %s', $key, current($value));
 				}
 				else
 				{

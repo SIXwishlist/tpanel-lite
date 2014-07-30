@@ -6,9 +6,15 @@
 { end }
 <p>Please enter your username and password below to login:</p>
 <form method="post">
+<div class="row">
 <label>Username:</label>
 {{ username }}
+</div>
+<div class="row">
 <label>Password:</label>
 {{ password }}
+</div>
+<div class="row">
 {{ submit }}
+</div>
 </form>

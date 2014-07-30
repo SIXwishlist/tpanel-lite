@@ -91,7 +91,7 @@ class Dir
 		$files = new RecursiveIteratorIterator($dir, RecursiveIteratorIterator::SELF_FIRST);
 		foreach ($files as $obj)
 		{
-			$dest = $dest.'/'.$obj->getSubPathName();
+			$dest = $dest.'/'.$files->getSubPathName();
 			if ($obj->isDir())
 			{
 				mkdir($dest, $obj->getPerms());

@@ -7,6 +7,7 @@ use Base\Template;
 use Base\Arr;
 use Base\Validator;
 use Base\App;
+use Base\IO\Dir;
 
 class User extends DbModel
 {
@@ -135,6 +136,8 @@ class User extends DbModel
 		if ($id !== false)
 		{
 			$this->userId = $id;
+			$d = new Dir($this->Config->getUserDir().'/'.$data['username']);
+			$d->create(0666);
 		}
 		return $id;
 	}
