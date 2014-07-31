@@ -206,8 +206,23 @@ form .row input[type="submit"]:active, form .row button:active {
 
 .file-grid {
 	list-style:none;
+	padding-left:0;
 }
 
 .file-grid li {
 	display:inline-block;
+	vertical-align:top;
+	padding:5px;
+	width:96px;
+}
+
+.file-grid .icon {
+	display:block;
+	height:64px;
+	margin:2px auto;
+}
+
+.file-grid .title {
+	text-align:center;
+	word-wrap: break-word;
 }

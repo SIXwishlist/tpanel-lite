@@ -9,6 +9,7 @@
 
 namespace Base\IO;
 use Base\Filter;
+use \SplFileInfo;
 
 class File
 {
@@ -33,6 +34,11 @@ class File
 	function copy ($dest)
 	{
 		return copy($this->file, $dest);
+	}
+	
+	function extension ()
+	{
+		return (new SplFileInfo($this->file))->getExtension();
 	}
 	
 	function exists ()
@@ -102,5 +108,10 @@ class File
 	public static function isFile ($f)
 	{
 		return file_exists($f) && is_file($f);
+	}
+	
+	public static function getExtension ($filename)
+	{
+		return (new File($filename))->extension();
 	}
 }

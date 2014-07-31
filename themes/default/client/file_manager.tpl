@@ -9,7 +9,7 @@
 	{if $file['info']->isDir() }
 	<li><a href="{{ @url('/files/'.$file['name']) }}"><img src="{{ @theme('icons/folder.png') }}" class="icon" /><div class="title">{{@file['name']}}</div></a></li>
 	{else}
-	<li><img src="{{ @theme('icons/file.png') }}" class="icon" /><div class="title">{{@file['name']}}</div></li>
+	<li><img src="{{ @theme('icons/'.$file['icon'].'.png') }}" class="icon" /><div class="title">{{@file['name']}}</div></li>
 	{end}
 {end}
 </ul>

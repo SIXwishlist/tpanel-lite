@@ -192,7 +192,37 @@ class FileSystem extends Model
 		if ($d->exists())
 		{
 			// Sort by filename
-			return $d->listAll(Dir::FILENAME);
+			return array_map(function ($item) {
+				switch (strtolower(File::getExtension($item['name'])))
+				{
+					case 'zip':
+					case 'tar':
+					case 'gz':
+					case 'tgz':
+					case 'rar':
+					case 'bz2':
+					case 'cab':
+						$item['icon'] = 'archive';
+						break;
+					case 'htm':
+					case 'html':
+						$item['icon'] = 'html';
+						break;
+					case 'jpg':
+					case 'jpeg':
+					case 'gif':
+					case 'bmp':
+					case 'png':
+					case 'tiff':
+					case 'tif':
+					case 'svg':
+						$item['icon'] = 'pic';
+						break;
+					default:
+						$item['icon'] = 'file';
+				}
+				return $item;
+			}, $d->listAll(Dir::FILENAME));
 		}
 		else
 		{
