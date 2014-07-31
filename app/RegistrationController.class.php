@@ -50,9 +50,9 @@ class RegistrationController extends Controller
 		$username = $request->param('user');
 		$activationCode = $request->param('activation');
 		
-		$userId = $this->User->filter(['username' => $username])->data('user_id');
-		
+		$userId = $this->User->filter('username', $username)->data('user_id');
 		$this->User->setUser($userId);
+		
 		if ($this->User->activate($activationCode))
 		{
 			$view->render('activate_successful');

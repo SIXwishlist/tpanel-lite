@@ -24,11 +24,13 @@ ul.stats {
   padding:1px;
   height:22px;
   width:100%;
-  background:#666;
+  background:-moz-linear-gradient(top,#555 0%,#606060 29%,#666 30%,#888 100%);
+  background:-webkit-linear-gradient(top,#555 0%,#606060 29%,#666 30%,#888 100%);
+  overflow:hidden;
 }
 
 .progress-bar .progress {
-  box-shadow:0px 1px 1px #666;
+  box-shadow:0px 1px 3px #fff;
   height:22px;
 }
 
@@ -63,6 +65,7 @@ ul.stats .progress-bar {
   font-size:2.5em;
   font-weight:normal;
   padding:0;
+  text-shadow:0px 3px 2px #eee;
 }
 
 .header .blue {
@@ -119,4 +122,83 @@ ul.icons .description {
 
 .clearfix {
   clear:both;
+}
+
+/** Form **/
+form {
+	padding:6px;
+}
+
+form .row {
+	display:block;
+	margin-bottom:6px;
+}
+
+form .row label {
+	font-size:1.25em;
+	display:block;
+}
+
+form .row input[type="text"], form .row input[type="password"], form .row input[type="email"] {
+	border:none;
+	font-size:1.5em;
+	background:-moz-linear-gradient(top,#eee 0%, #fff 20%);
+	background:-webkit-linear-gradient(top,#eee 0%, #fff 20%);
+	padding:6px;
+	border:1px solid #ddd;
+	width:100%;
+}
+
+form .row .field {
+	margin-left:15px;
+}
+
+form .row input[type="submit"], form .row button {
+	border:1px solid #029CE6;
+	border-bottom:1px solid #67767D;
+	font-family:Arial;
+	text-transform:uppercase;
+	border-radius:3px;
+	font-size:1.1em;
+	font-weight:bold;
+	text-shadow:0px 1px 0px #087EBB;
+	color:#fff;
+	box-shadow:inset 0px 1px 0px #7BC3F5;
+	padding:11px 29px;
+	background:-moz-linear-gradient(bottom, #1293EE, #6AB3F8);
+	background:-webkit-linear-gradient(bottom, #1293EE, #6AB3F8);
+}
+
+form .row input[type="submit"]:focus, form .row button:focus {
+	outline:none;
+}
+
+form .row input[type="submit"]:active, form .row button:active {
+	background:#199AED;
+	text-shadow:none;
+	color:rgba(255,255,255,0.5);
+	border:1px solid #0388E7;
+	box-shadow:none;
+}
+
+.alert {
+	text-align:center;
+	padding:4px;
+	width:auto;
+	margin:4px 8px;
+}
+
+.alert.danger {
+	color:#220000;
+	background:#ffcccc;
+	border:1px solid #770000;
+}
+
+.container-center {
+	margin-left:auto;
+	margin-right:auto;
+}
+
+.width-1-2 {
+	width:50%;
 }

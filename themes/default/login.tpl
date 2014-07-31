@@ -1,20 +1,20 @@
 <h2>Login</h2>
 { display(message) }
-	<div style="color:#220000;background:#ffdddd;text-align:center">
+	<div class="alert danger">
 		{{ @message }}
 	</div>
 { end }
 <p>Please enter your username and password below to login:</p>
-<form method="post">
+<form method="post" class="form width-1-2 container-center">
 <div class="row">
-<label>Username:</label>
-{{ username }}
+	<label>Username:</label>
+	<div class="field">{{ username }}</div>
 </div>
 <div class="row">
-<label>Password:</label>
-{{ password }}
+	<label>Password:</label>
+	<div class="field">{{ password }}</div>
 </div>
 <div class="row">
-{{ submit }}
+	<div class="field">{{ submit }}</div>
 </div>
 </form>

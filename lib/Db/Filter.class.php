@@ -156,10 +156,17 @@ class Filter
 		return $q->fetchAll();
 	}
 	
-	function data ($key)
+	function data ($key, $default = null)
 	{
 		$this->checkFirstRow();
-		return $this->queryData->$key;
+		if (isset($this->queryData->$key))
+		{
+			return $this->queryData->$key;
+		}
+		else
+		{
+			return $default;
+		}
 	}
 	
 	protected function getCount ()

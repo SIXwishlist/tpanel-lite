@@ -253,7 +253,7 @@ class Validator
 		{
 			if (strcmp($this->data[$key1], $this->data[$key2]) !== 0)
 			{
-				$this->add_message($msg, self::SAME, array($this->label($key1), $this->label($key2)));
+				$this->add_message($msg, self::MSG_SAME, array($this->label($key1), $this->label($key2)));
 			}
 		}
 		
