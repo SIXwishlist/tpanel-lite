@@ -1,17 +1,18 @@
 <h4>/{{@dir}}</h4>
-<table width="100%">
-<tr><th>Name</th><th>Size</th></tr>
+<ul class="file-grid">
 {if $dir !== ''}
-	<tr><td><a href="{{ @url('/files/'.$dir.'/..') }}">..</a></td><td>-</td></tr>
+	<li>
+		<a href="{{ @url('/files/'.$dir.'/..') }}"><img src="{{ @theme('icons/folder.png') }}" class="icon" /><div class="title">..</div></a>
+	</li>
 {end}
 {foreach $files -> $file}
 	{if $file['info']->isDir() }
-	<tr><td><a href="{{ @url('/files/'.$file['name']) }}">{{@file['name']}}</a></td><td>{{@file['size']}}</td></tr>
+	<li><a href="{{ @url('/files/'.$file['name']) }}"><img src="{{ @theme('icons/folder.png') }}" class="icon" /><div class="title">{{@file['name']}}</div></a></li>
 	{else}
-	<tr><td>{{@file['name']}}</td><td>{{@file['size']}}</td></tr>
+	<li><img src="{{ @theme('icons/file.png') }}" class="icon" /><div class="title">{{@file['name']}}</div></li>
 	{end}
 {end}
-</table>
+</ul>
 
 <div class="stats">
 	Usage: {{@usage}}

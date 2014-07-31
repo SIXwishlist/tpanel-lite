@@ -19,6 +19,7 @@ ul.stats {
 }
 
 .progress-bar {
+  border-radius:3px;
   margin:8px 0;
   box-shadow:0px 1px 3px #777 inset;
   padding:1px;
@@ -30,7 +31,7 @@ ul.stats {
 }
 
 .progress-bar .progress {
-  box-shadow:0px 1px 3px #fff;
+  box-shadow:inset 0px 5px 6px rgba(255,255,255,0.5);
   height:22px;
 }
 
@@ -201,4 +202,12 @@ form .row input[type="submit"]:active, form .row button:active {
 
 .width-1-2 {
 	width:50%;
+}
+
+.file-grid {
+	list-style:none;
+}
+
+.file-grid li {
+	display:inline-block;
 }
