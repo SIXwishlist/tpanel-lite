@@ -93,7 +93,7 @@ class APIController extends Controller
 	function saveFile ($request, $view)
 	{
 		$file = $request->post('file');
-		$contents = base64_decode($request->post('contents'));
+		$contents = $request->post('contents');
 		
 		if ($this->canSaveFile(mb_strlen($contents)))
 		{

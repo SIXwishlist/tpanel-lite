@@ -84,10 +84,17 @@ class File
 	{
 		if ($newContents !== null)
 		{
-			$f = fopen($this->file, 'w');
-			fwrite($f, $newContents);
-			fclose($f);
-			return true;
+			if (is_writable($this->file))
+			{
+				$f = fopen($this->file, 'w');
+				fwrite($f, $newContents);
+				fclose($f);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 		else
 		{
