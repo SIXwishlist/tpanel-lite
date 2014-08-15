@@ -64,7 +64,7 @@ class Template
 		{
 			foreach ($this->code as $line)
 			{
-				$this->output .= $this->compileLine($line);
+				$this->output .= $this->compileLine($line)."\n";
 			}
 		}
 	}
@@ -77,10 +77,10 @@ class Template
 	protected function compileLine ($line)
 	{
 		// {{ @statement: }}
-		$line = preg_replace('/\{\{\s*@(.+?)\:\s*\}\}/', self::PHP_START.'print \$this->filter(\$this->$1());'.self::PHP_END, $line);
+		$line = preg_replace('/\{\{\s*@(.+?):\s*\}\}/', self::PHP_START.'print \$this->filter(\$this->$1());'.self::PHP_END, $line);
 
 		// {{ @statement(...) }}
-		$line = preg_replace('/\{\{\s*@(.+?)\((.+?)\)\s*\}\}/', self::PHP_START.'print \$this->filter(\$this->$1($2));'.self::PHP_END, $line);
+		$line = preg_replace('/\{\{\s*@(\w+?)\((.+?)\)\s*\}\}/', self::PHP_START.'print \$this->filter(\$this->$1($2));'.self::PHP_END, $line);
 		
 		// {{ @statement }}
 		$line = preg_replace('/\{\{\s*@(.+?)\s*\}\}/', self::PHP_START.'print \$this->filter(isset(\$$1) ? \$$1 : \'\');'.self::PHP_END, $line);

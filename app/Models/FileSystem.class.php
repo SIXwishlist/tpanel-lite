@@ -221,6 +221,8 @@ class FileSystem extends Model
 					default:
 						$item['icon'] = 'file';
 				}
+				$item['isdir'] = $item['info']->isDir();
+				
 				return $item;
 			}, $d->listAll(Dir::FILENAME));
 		}
