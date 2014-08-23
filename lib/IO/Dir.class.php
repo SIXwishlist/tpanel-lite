@@ -116,6 +116,7 @@ class Dir
 	
 	function rename ($dest)
 	{
+		$dest = basename($dest);
 		return rename($this->dir, dirname($this->dir).'/'.$dest);
 	}
 	

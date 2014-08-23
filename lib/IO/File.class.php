@@ -76,6 +76,7 @@ class File
 	
 	function rename ($name)
 	{
+		$name = basename($name);
 		$dir = dirname($this->file);
 		return rename($this->file, $dir.'/'.$name);
 	}
