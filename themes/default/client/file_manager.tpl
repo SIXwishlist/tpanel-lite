@@ -1,17 +1,20 @@
 <script type="text/javascript" src="{{ @theme('js/jquery.js') }}"></script>
 <script type="text/javascript" src="{{ @theme('js/filemanager.js') }}"></script>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+	FileManager.init('/{{@dir}}');
+});
+</script>
 <h4>/{{@dir}}</h4>
 <ul class="button-group" id="file-menu">
 	<li><a id="rename">Rename</a></li>
 	<li><a id="delete">Delete</a></li>
-	<li><a id="move">Move</a></li>
-	<li><a id="copy">Copy</a></li>
 	<li><a id="upload">Upload</a></li>
 	<li><a id="mkdir">New Directory</a></li>
 </ul>
 <ul class="file-grid">
 {if $dir !== ''}
-	<li data-type="up">
+	<li class="up" data-type="up">
 		<a href="{{ @url('/files/'.$dir.'/..') }}"><img src="{{ @theme('icons/folder.png') }}" class="icon" /><div class="title">..</div></a>
 	</li>
 {end}

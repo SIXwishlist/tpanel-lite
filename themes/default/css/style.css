@@ -218,6 +218,12 @@ form .row input[type="submit"]:active, form .row button:active {
 	vertical-align:top;
 	padding:5px;
 	width:96px;
+	border:1px solid #fff;
+}
+
+.file-grid li.selected {
+	border:1px solid #33559f;
+	background:#ffefd9;
 }
 
 .file-grid .icon {
@@ -249,6 +255,11 @@ ul.button-group li {
 	box-shadow:1px 0px 0px #aaa;
 }
 
+ul.button-group li.selected {
+	background:-moz-linear-gradient(top,#FCBD64 0%,#fff 5%, #EDA72F 100%);
+	background:-webkit-linear-gradient(top,#FCBD64 0%,#fff 5%, #EDA72F 100%);
+}
+
 ul.button-group li a {
 	text-decoration:none;
 	color:#333;
@@ -263,7 +274,7 @@ ul.button-group li:first-child a {
 	border-top-left-radius:4px;
 }
 
-ul.button-group li a:active, ul.button-group li.selected {
+ul.button-group li a:active{
 	background:-moz-linear-gradient(top,#aaa,#ddd);
 	background:-webkit-linear-gradient(top,#aaa,#ddd);
 }
