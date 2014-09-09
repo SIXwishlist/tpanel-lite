@@ -1,48 +1,70 @@
-var FileManager = {dir:null,selectFunc:null};
-
-FileManager.init = function (dir) {
-	FileManager.dir = dir;
-};
-
-FileManager.select = function (callback) {
-	FileManager.selectFunc = callback;
-	FileManager.selectFiles(true);
-	return false;
-};
-
-FileManager.selectFiles = function(on) {
-	if (on===true) {
-		jQuery('.file-grid > li, .file-grid > li:not(.up) > a').click(function() {
-			jQuery(this).toggleClass('selected');
-			if (FileManager.selectFunc !== null)
-			{
-				FileManager.selectFunc(jQuery(this).data('filename'));
-				FileManager.selectFiles(false);
-				jQuery(this).toggleClass('selected');
-			}
-			return false;
-		});
-	} else {
-		jQuery('.file-grid li').off();
-	}
-};
-
-FileManager.renameFile = function (filename) {
-	prompt('Filename:', filename);
+var Dialog = {};
+Dialog.show = function (id, okCallback) {
+	var dlg = jQuery('#'+id);
+	dlg.css('width','400px').css('height','240px').css('margin-left','-200px').css('margin-top','-120px');
+	
+	// Init an overlay
+	var ovl = dlg.parent('.overlay');
+	ovl.show();
+	
+	// Init the OK button
+	dlg.find('.ok-btn').click(function() {
+		okCallback(dlg);
+		ovl.hide()
+		dlg.hide();
+		return false;
+	});
+	
+	// Init the cancel button
+	dlg.find('.cancel-btn').click(function() {
+		ovl.hide();
+		dlg.hide();
+		return false;
+	});
+	
+	dlg.show();
 };
 
 jQuery(document).ready(function() {
-	jQuery('#file-menu #rename').click(function() {
-		jQuery(this).parent('li').toggleClass('selected');
-		return FileManager.select(FileManager.renameFile);
-	});
 	jQuery('#file-menu #delete').click(function() {
-		alert('delete');
+		if (confirm('Remove "'+jQuery('.file-check').first().val()+'"?'))
+		{
+			alert('DELETE');
+		}
+		return false;
 	});
+	
+	jQuery('#file-menu #rename').click(function() {
+		var name = prompt('Rename Name:', jQuery('.file-check').first().val());
+		if (name !== null && name !== false)
+		{
+			alert('RENAME '+name);
+		}
+		return false;
+	});
+	
 	jQuery('#file-menu #upload').click(function() {
-		alert('upload');
+		Dialog.show('upload-dialog', function (dlg) {
+			jQuery('form#upload-form').submit();
+		});
+		return false;
 	});
 	jQuery('#file-menu #mkdir').click(function() {
-		alert('mkdir');
+		var dir = prompt('Directory Name:');
+		if (dir !== null && dir !== false)
+		{
+			API.mkdir(dir);
+		}
+		return false;
+	});
+	
+	jQuery('.commands #check-all').click(function () {
+		jQuery('.file-table input[type="checkbox"].file-check').prop('checked', true);
+		return false;
+	});
+	
+	jQuery('.commands #check-none').click(function () {
+		jQuery('.file-table input[type="checkbox"].file-check').prop('checked', false);
+		return false;
 	});
 });

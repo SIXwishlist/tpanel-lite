@@ -56,6 +56,8 @@ class Template
 		$this->addFunction('filter', array($this, 'filter'));
 		$this->addFunction('include', array($this, 'tInclude'));
 		$this->addFunction('content', array($this, 'content'));
+		$this->addFunction('date', array($this, 'date'));
+		$this->addFunction('filesize', array($this, 'filesize'));
 	}
 
 	protected function build ()
@@ -124,6 +126,16 @@ class Template
 	protected function url ($text)
 	{
 		return Path::web($text);
+	}
+	
+	protected function date ($fmt, $timestamp)
+	{
+		return date($fmt, $timestamp);
+	}
+	
+	protected function filesize ($size)
+	{
+		return Filter::fileSize($size);
 	}
 	
 	protected function theme ($text)

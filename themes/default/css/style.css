@@ -140,7 +140,7 @@ form .row label {
 	display:block;
 }
 
-form .row input[type="text"], form .row input[type="password"], form .row input[type="email"] {
+form .row input[type="text"], form .row input[type="password"], form .row input[type="email"], form .row input[type="file"] {
 	border:none;
 	font-size:1.5em;
 	background:-moz-linear-gradient(top,#eee 0%, #fff 20%);
@@ -148,6 +148,7 @@ form .row input[type="text"], form .row input[type="password"], form .row input[
 	padding:6px;
 	border:1px solid #ddd;
 	width:100%;
+	outline:none;
 }
 
 form .row .field {
@@ -277,4 +278,42 @@ ul.button-group li:first-child a {
 ul.button-group li a:active{
 	background:-moz-linear-gradient(top,#aaa,#ddd);
 	background:-webkit-linear-gradient(top,#aaa,#ddd);
+}
+
+table.file-table {
+	width:100%;
+}
+
+.file-table .icon {
+	margin:0px 5px;
+	margin-bottom:-4px;
+}
+
+table.file-table tr:not(:first-child):nth-child(2n+1) {
+	background:#eee;
+}
+
+table.file-table tr:nth-child(2n) {
+	background:#f3f3f3;
+}
+
+.dialog {
+	background:#eee;
+	box-shadow:0px 2px 7px #999;
+	display:none;
+	position:absolute;
+	top:50%;
+	left:50%;
+	padding:8px;
+	box-sizing:border-box;
+}
+
+.overlay {
+	display:none;
+	background:rgba(127,127,127,0.5);
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0px;
+	left:0px;
 }

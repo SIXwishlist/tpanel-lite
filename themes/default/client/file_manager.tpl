@@ -1,10 +1,5 @@
 <script type="text/javascript" src="{{ @theme('js/jquery.js') }}"></script>
 <script type="text/javascript" src="{{ @theme('js/filemanager.js') }}"></script>
-<script type="text/javascript">
-jQuery(document).ready(function() {
-	FileManager.init('/{{@dir}}');
-});
-</script>
 <h4>/{{@dir}}</h4>
 <ul class="button-group" id="file-menu">
 	<li><a id="rename">Rename</a></li>
@@ -12,25 +7,66 @@ jQuery(document).ready(function() {
 	<li><a id="upload">Upload</a></li>
 	<li><a id="mkdir">New Directory</a></li>
 </ul>
-<ul class="file-grid">
+<div class="overlay">
+	<div class="dialog" id="upload-dialog">
+		<form id="upload-form" method="post" action="{{ @url('api/file/upload') }}">
+			<h2>Upload a file</h2>
+			<p>Please select the file below and press &quot;Upload&quot; to continue.</p>
+			<div class="row">
+				<label>Filename:</label>
+				<div class="field">
+					<input type="file" name="upload" />
+				</div>
+			</div>
+			<div class="row">
+				<button class="ok-btn">Upload</button>
+				<button class="cancel-btn">Cancel</button>
+			</div>
+		</form>
+	</div>
+</div>
+<table class="file-table">
+	<tr>
+		<th>&nbsp;</th>
+		<th>Filename</th>
+		<th>Size</th>
+		<th>Last Modified</th>
+	</tr>
 {if $dir !== ''}
-	<li class="up" data-type="up">
-		<a href="{{ @url('/files/'.$dir.'/..') }}"><img src="{{ @theme('icons/folder.png') }}" class="icon" /><div class="title">..</div></a>
-	</li>
+	<tr>
+		<td>&nbsp;</td>
+		<td>
+			<a href="{{ @url('/files/'.$dir.'/..') }}"><img src="{{ @theme('icons/icon_dir.png') }}" class="icon" />..</a>
+		</td>
+		<td>&nbsp;</td>
+		<td>&nbsp;</td>
+	</tr>
 {end}
 {foreach $files -> $file}
 	{if $file['info']->isDir() }
-		<li data-type="dir" data-filename="{{ @file['name'] }}"><a href="{{ @url('/files/'.$file['name']) }}"><img src="{{ @theme('icons/folder.png') }}" class="icon" /><div class="title">{{@file['name']}}</div></a></li>
+		<tr>
+			<td><input type="checkbox" class="file-check" name="file[]" value="{{ @file['name'] }}" /></td>
+			<td><a href="{{ @url('/files/'.$file['name']) }}"><img src="{{ @theme('icons/icon_dir.png') }}" class="icon" />{{@file['name']}}</a></td>
+			<td>-</td>
+			<td>{{ @date('Y-m-d H:i:s', $file['info']->getMTime()) }}</td>
+		</tr>
 	{else}
-		<li data-type="file" data-filename="{{ @file['name'] }}"><img src="{{ @theme('icons/'.$file['icon'].'.png') }}" class="icon" /><div class="title">{{@file['name']}}</div></li>
+		<tr>
+			<td><input type="checkbox" class="file-check" name="file[]" value="{{ @file['name'] }}" /></td>
+			<td><img src="{{ @theme('icons/icon_file.png') }}" class="icon" />{{@file['name']}}</a></td>
+			<td>{{ @filesize($file['size']) }}</td>
+			<td>{{ @date('Y-m-d H:i:s', $file['info']->getMTime()) }}</td>
+		</tr>
 	{end}
 {end}
-</ul>
-
+</table>
+<div class="commands">
+	Check: <a href="#" id="check-all">All</a> | <a href="#" id="check-none">None</a>
+</div>
 <div class="stats">
 	Usage: {{@usage}}
 	Free: {{@free}}
-	<div style="border:1px solid #000">
-		<div style="background:-moz-linear-gradient(top,#DBF7FF,#81B6C4);height:27px;width:{{@usagePercent}}%;"> </div>
+	<div class="progress-bar">
+		<div class="progress blue" style="width:{{@usagePercent}}%;"> </div>
 	</div>
 </div>
