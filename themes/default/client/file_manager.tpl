@@ -1,5 +1,11 @@
 <script type="text/javascript" src="{{ @theme('js/jquery.js') }}"></script>
 <script type="text/javascript" src="{{ @theme('js/filemanager.js') }}"></script>
+<script type="text/javascript">
+	var FileManager = {};
+	FileManager.dir = '{{ @dir }}';
+	FileManager.baseURI = '{{ @url('/') }}';
+	FileManager.URI = '{{ @url('files/'.$dir) }}';
+</script>
 <h4>/{{@dir}}</h4>
 <ul class="button-group" id="file-menu">
 	<li><a id="rename">Rename</a></li>
@@ -9,20 +15,18 @@
 </ul>
 <div class="overlay">
 	<div class="dialog" id="upload-dialog">
-		<form id="upload-form" method="post" action="{{ @url('api/file/upload') }}">
-			<h2>Upload a file</h2>
-			<p>Please select the file below and press &quot;Upload&quot; to continue.</p>
-			<div class="row">
-				<label>Filename:</label>
-				<div class="field">
-					<input type="file" name="upload" />
-				</div>
+		<h2>Upload a file</h2>
+		<p>Please select the file below and press &quot;Upload&quot; to continue.</p>
+		<div class="row">
+			<label>Filename:</label>
+			<div class="field">
+				<input type="file" name="upload" id="upload-file" />
 			</div>
-			<div class="row">
-				<button class="ok-btn">Upload</button>
-				<button class="cancel-btn">Cancel</button>
-			</div>
-		</form>
+		</div>
+		<div class="row">
+			<button class="ok-btn">Upload</button>
+			<button class="cancel-btn">Cancel</button>
+		</div>
 	</div>
 </div>
 <table class="file-table">

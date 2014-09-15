@@ -2,6 +2,7 @@
 
 namespace App\Models;
 use Base\MVC\Model;
+use Base\Arr;
 use Base\Exception;
 use Base\IO\Dir;
 use Base\IO\File;
@@ -173,14 +174,13 @@ class FileSystem extends Model
 		$info = $this->getUploadMeta($request);
 		$f = new File($dir.'/'.$info['file']);
 		
-		// No params means read from php://input
-		return $f->upload();
+		return $f->upload($request->file('upload'));
 	}
 	
 	function getUploadMeta ($request)
 	{
-		$file = $this->filterDir($request->header('TPL-FILENAME'));
-		$size = $request->header('TPL-SIZE');
+		$file = $this->filterDir(Arr::get($request->file('upload'), 'filename', null));
+		$size = Arr::get($request->file('upload'), 'size', null);
 		return ['file' => $file, 'size' => $size];
 	}
 	

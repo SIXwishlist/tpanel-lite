@@ -26,9 +26,26 @@ class Request
 		$this->params = array();
 	}
 	
+	function get ($key, $default = null)
+	{
+		return isset($this->get[$key]) ? $this->get[$key] : $default;
+	}
+	
 	function post ($key, $default = null)
 	{
 		return isset($this->post[$key]) ? $this->post[$key] : $default;
+	}
+	
+	function file ($id, $default = null)
+	{
+		return isset($_FILES[$id]) ? $this->generateFileArray($_FILES[$id]) : $default;
+	}
+	
+	protected function generateFileArray ($file)
+	{
+		return ['filename' => $file['name'],
+				'size' => $file['size'], 
+				'tmp' => $file['tmp_name']];
 	}
 	
 	function postArray ()

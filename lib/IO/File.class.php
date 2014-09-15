@@ -85,7 +85,7 @@ class File
 	{
 		if ($newContents !== null)
 		{
-			if (is_writable($this->file))
+			if (!is_file($this->file) || is_writable($this->file))
 			{
 				$f = fopen($this->file, 'w');
 				fwrite($f, $newContents);
@@ -103,7 +103,24 @@ class File
 		}
 	}
 	
-	function upload ()
+	function upload ($fileInfo = null)
+	{
+		if ($fileInfo !== null)
+		{
+			return $this->uploadFromRequest($fileInfo);
+		}
+		else
+		{
+			return $this->uploadFromInput();
+		}
+	}
+	
+	function uploadFromRequest ($fileInfo)
+	{
+		return isset($fileInfo['tmp']) && @move_uploaded_file($fileInfo['tmp'], $this->file);
+	}
+	
+	function uploadFromInput ()
 	{
 		return $this->contents(file_get_contents('php://input'));
 	}

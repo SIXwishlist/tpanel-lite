@@ -15,4 +15,16 @@ class Arr
 	{
 		return array_intersect_key($data, array_flip($keys));
 	}
+	
+	public static function get ($data, $key, $default = null)
+	{
+		if (isset($data[$key]))
+		{
+			return $data[$key];
+		}
+		else
+		{
+			return $default;
+		}
+	}
 }

@@ -55,7 +55,7 @@ class APIController extends Controller
 	// Upload a file
 	function uploadFile ($request, $view)
 	{
-		$dir = $request->post('dir');
+		$dir = $request->get('dir');
 		
 		$fileInfo = $this->FileSystem->getUploadMeta($request);
 		if (!$this->canSaveFile($fileInfo['size']))
