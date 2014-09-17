@@ -158,6 +158,10 @@ class APIController extends Controller
 		$file = $request->post('file');
 		
 		$view->success = $this->FileSystem->delete($file);
+		if (!$view->success)
+		{
+			$view->error = 'File does not exist';
+		}
 		$view->renderAsJSON();
 	}
 	

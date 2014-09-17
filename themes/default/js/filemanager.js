@@ -26,24 +26,41 @@ Dialog.show = function (id, okCallback) {
 };
 
 jQuery(document).ready(function() {
+	FileManager.fileList = null;
+	
 	jQuery('#file-menu #delete').click(function() {
-		if (confirm('Remove "'+jQuery('.file-check:checked').first().val()+'"?'))
+		var files = jQuery('.file-check:checked').map(function (num, item) {
+			return jQuery(item).val();
+		});
+		if (files.size() > 0 && confirm(files.size() > 1 ? 'Remove selected files?' : 'Remove "'+files[0]+'"?'))
 		{
-			jQuery.post(FileManager.baseURI+'/api/file/delete', {'file':FileManager.dir+'/'+jQuery('.file-check:checked').first().val()}, function (data) {
-				if (data.success === true)
-				{
-					window.location = FileManager.URI;
-				}
-				else
-				{
-					alert('ERROR: '+data.error);
-				}
-			});
+			FileManager.fileList = jQuery.makeArray(files);
+			FileManager.deleteFile();
 		}
 		return false;
 	});
 	
+	FileManager.deleteFile = function () {
+		jQuery.post(FileManager.baseURI+'/api/file/delete', {'file':FileManager.dir+'/'+FileManager.fileList.pop()}, function (data) {
+			if (!data.success === true)
+			{
+				alert('ERROR: '+data.error);
+			}
+			else if (FileManager.fileList.length > 0)
+			{
+				FileManager.deleteFile();
+			}
+			else
+			{
+				alert('File(s) removed successfully');
+				window.location = FileManager.URI;
+			}
+		});
+	};
+	
 	jQuery('#file-menu #rename').click(function() {
+		if (jQuery('.file-check:checked').size() < 1) return false;
+		
 		var name = prompt('Rename Name:', jQuery('.file-check:checked').first().val());
 		if (name !== null && name !== false)
 		{

@@ -29,7 +29,7 @@ class Dir
 	
 	function create ($perms = 0644)
 	{
-		return mkdir($this->dir, $perms, true);
+		return @mkdir($this->dir, $perms, true);
 	}
 	
 	function remove ($recursive = true)
@@ -42,16 +42,16 @@ class Dir
 			{
 				if ($obj->isDir())
 				{
-					rmdir($obj->getPathname());
+					@rmdir($obj->getPathname());
 				}
 				else
 				{
-					unlink($obj->getPathname());
+					@unlink($obj->getPathname());
 				}
 			}
 			
 			// Finally remove the directory
-			return rmdir($this->dir);
+			return @rmdir($this->dir);
 		}
 		else
 		{
@@ -60,7 +60,7 @@ class Dir
 			{
 				if ($obj->isFile())
 				{
-					unlink($obj->getPathname());
+					@unlink($obj->getPathname());
 				}
 			}
 			return true;

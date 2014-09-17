@@ -23,17 +23,17 @@ class File
 	function create ($perms = 0644)
 	{
 		touch($this->file);
-		return chmod($this->file, $perms);
+		return @chmod($this->file, $perms);
 	}
 	
 	function delete ()
 	{
-		return unlink($this->file);
+		return @unlink($this->file);
 	}
 	
 	function copy ($dest)
 	{
-		return copy($this->file, $dest);
+		return @copy($this->file, $dest);
 	}
 	
 	function extension ()
@@ -78,7 +78,7 @@ class File
 	{
 		$name = basename($name);
 		$dir = dirname($this->file);
-		return rename($this->file, $dir.'/'.$name);
+		return @rename($this->file, $dir.'/'.$name);
 	}
 	
 	function contents ($newContents = null)
