@@ -401,3 +401,9 @@ table.backup-files tr:nth-child(2n+1) {
 	background:#CCFFD1;
 	color:#43AC4E;
 }
+
+#space-usage {
+	display:block;
+	margin-left:auto;
+	margin-right:auto;
+}

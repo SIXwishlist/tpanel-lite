@@ -6,6 +6,7 @@ use Base\Arr;
 use Base\Exception;
 use Base\IO\Dir;
 use Base\IO\File;
+use Base\Filter;
 
 class FileSystem extends Model
 {
@@ -240,6 +241,9 @@ class FileSystem extends Model
 	
 	function usageAsJSON ()
 	{
+		$colors = ['#8E44AD','#9B59B6','#C0392B','#E74C3C','#2980B9',
+				   '#3498DB','#D35400','#E67E22','#27AE60','#2ECC71',
+				   '#F39C12','#F1C40F','#16A085','#1ABC9C'];
 		$d = new Dir($this->getUserDir());
 		$files = $d->listAll(Dir::SIZE);
 		$result = [];
@@ -256,7 +260,8 @@ class FileSystem extends Model
 					$subdir = new Dir($d->getDir().'/'.$file['name']);
 					$size = $subdir->size(true);
 				}
-				$result[] = ['label' => $file['name'], 'value' => $size, 'color' => '#dd0000'];
+				$index = intval(($size / 1024 / 1024) * count($colors)) % count($colors);
+				$result[] = ['label' => $file['name'].' ('.Filter::filesize($size).')', 'value' => $size, 'color' => $colors[$index]];
 			}
 		}
 		return json_encode($result, true);

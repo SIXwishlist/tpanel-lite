@@ -2,11 +2,18 @@
 <script type="text/javascript">
 window.onload = function () {
 	var stats = {{usageData}};
-	var ctx = document.getElementById("chart").getContext("2d");
-	var statsPie = new Chart(ctx).Pie(stats);
+	var ctx = document.getElementById("space-usage").getContext("2d");
+	var statsPie = new Chart(ctx).Pie(stats, {
+	'tooltipTemplate':"<%=label%>",
+	animateRotate : false,
+	animationEasing : "easeOut",
+	animationSteps: 60,
+	animateScale: true
+	});
 };
 </script>
-<canvas style="height:300px" id="chart">
+<p>The space usage overview below details some of the largest files and directories that account for the bulk of your web space usage.</p>
+<canvas height="400" width="400" id="space-usage">
 
 </canvas>
 <div class="stats">
