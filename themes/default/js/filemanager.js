@@ -65,6 +65,7 @@ jQuery(document).ready(function() {
 		Dialog.show('upload-dialog', function (dlg) {
 			var data = new FormData();
 			data.append('upload', jQuery('#upload-file').get(0).files[0]);
+			
 			jQuery.ajax({
 				url: FileManager.baseURI+'/api/file/upload?dir='+escape(FileManager.dir),
 				data: data,
@@ -79,6 +80,7 @@ jQuery(document).ready(function() {
 					}
 					else
 					{
+						console.log(data);
 						alert('ERROR: '+data.error);
 					}
 				}

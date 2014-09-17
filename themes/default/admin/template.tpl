@@ -10,6 +10,11 @@
 	    <a href="{{ @url('/admin/') }}"><h1><span class="blue">tPanel</span> <span class="green">Lite</span></h1></a>
 	  </div>
 	  <div class="content">
+	    { if $this->hasFlash() }
+			<div class="alert success">
+				{{ @flash: }}
+			</div>
+		{ end }
 	    {{ content: }}
 	  </div>
 	</div>

@@ -84,14 +84,16 @@ class View
 		self::$theme = $theme;
 	}
 	
-	function hasFlash ()
+	public static function hasFlash ()
 	{
 		return App::Session('Flash')->exists('message');
 	}
 	
-	function getFlash ()
+	public static function getFlash ()
 	{
-		return App::Session('Flash')->get('message');
+		$msg = App::Session('Flash')->get('message');
+		App::Session('Flash')->delete('message');
+		return $msg;
 	}
 	
 	public static function flashMessage ($msg)

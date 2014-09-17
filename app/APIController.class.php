@@ -63,9 +63,14 @@ class APIController extends Controller
 			$view->success = false;
 			$view->error = 'File exceeds web space limit';
 		}
+		elseif (!$this->FileSystem->upload($dir, $request))
+		{
+			$view->success = false;
+			$view->error = 'Directory permissions do not permit file uploads to this path';
+		}
 		else
 		{
-			$view->success = $this->FileSystem->upload($dir, $request);
+			$view->success = true;
 		}
 		$view->renderAsJSON();
 	}
@@ -102,6 +107,7 @@ class APIController extends Controller
 		else
 		{
 			$view->success = false;
+			$view->error = 'Free space is too low';
 		}
 		$view->renderAsJSON();
 	}
@@ -137,6 +143,7 @@ class APIController extends Controller
 		if ($info === false || !$this->canSaveFile($info['size']))
 		{
 			$view->success = false;
+			$view->error = 'Free space is too low';
 		}
 		else
 		{

@@ -8,6 +8,7 @@
 
 namespace Base;
 use Base\IO\File;
+use Base\MVC\View;
 
 class Template
 {
@@ -58,6 +59,8 @@ class Template
 		$this->addFunction('content', array($this, 'content'));
 		$this->addFunction('date', array($this, 'date'));
 		$this->addFunction('filesize', array($this, 'filesize'));
+		$this->addFunction('hasFlash', array($this, 'hasFlash'));
+		$this->addFunction('flash', array($this, 'getFlash'));
 	}
 
 	protected function build ()
@@ -136,6 +139,16 @@ class Template
 	protected function filesize ($size)
 	{
 		return Filter::fileSize($size);
+	}
+	
+	protected function hasFlash ()
+	{
+		return View::hasFlash();
+	}
+	
+	protected function getFlash ()
+	{
+		return View::getFlash();
 	}
 	
 	protected function theme ($text)

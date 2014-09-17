@@ -317,3 +317,87 @@ table.file-table tr:nth-child(2n) {
 	top:0px;
 	left:0px;
 }
+
+table.html-editor-files {
+	width:100%;
+}
+
+table.html-editor-files tr:nth-child(2n) {
+	background:#eee;
+}
+
+table.html-editor-files tr:nth-child(2n+1) {
+	background:#f3f3f3;
+}
+
+table.html-editor-files tr.new {
+	background:#fff;
+}
+
+table.html-editor-files tr td {
+	padding:4px;
+}
+
+table.html-editor-files .icon {
+	margin-bottom:-4px;
+	margin-left:4px;
+	margin-right:8px;
+}
+
+div.html-editor-frame {
+	background:#fff;
+	position:absolute;
+	top:50%;
+	left:50%;
+	width:90%;
+	margin-left:-45%;
+	margin-top:-235px;
+	height:470px;
+	padding:10px;
+	box-shadow:0px 0px 5px #777;
+}
+
+.padding-10 {
+	padding:10px;
+}
+
+table.backup-files {
+	width:100%;
+	border-spacing:0px;
+	border:1px solid #ddd;
+	box-shadow:0px 0px 4px #777;
+}
+
+table.backup-files tr td {
+	padding:5px;
+}
+
+table.backup-files tr:nth-child(2n) {
+	background:#eee;
+}
+
+table.backup-files tr:nth-child(2n+1) {
+	background:#f3f3f3;
+}
+
+.alert {
+	padding:5px;
+	width:100%;
+	box-sizing:border-box;
+	margin:5px 0;
+	border:1px solid #71C1ED;
+	background:#D3EFFF;
+	color:#51A1CD;
+}
+
+.alert.danger {
+	border-color:#C64343;
+	background:#FFC6C6;
+	color:#C64343;
+}
+
+.alert.success {
+	border-color:#63CC6E;
+	background:#CCFFD1;
+	color:#43AC4E;
+}

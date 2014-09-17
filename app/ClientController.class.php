@@ -127,6 +127,12 @@ class ClientController extends ClientBase
 		
 		$confirmLevel = App::Session('Client')->get('deleteConfirm', 0);
 		
+		// Display a warning to the user if they click "Remove"
+		if ($confirmLevel === 1)
+		{
+			$view->warning = true;
+		}
+		
 		if ($request->isPost())
 		{
 			if ($request->posted('funcbtn1'))
@@ -173,9 +179,6 @@ class ClientController extends ClientBase
 		$form = new Form($request);
 		$form->assign($config);
 		
-		// Display a warning to the user if they click "Remove"
-		$view->warning = ($confirmLevel === 1);
-		
 		$view->form = $form;
 		$view->render('settings');
 	}
@@ -204,12 +207,12 @@ class ClientController extends ClientBase
 			if ($request->posted('funcbtn1'))
 			{
 				// Backup the site
-				$view->success = $this->Backup->backup();
+				$view->success1 = $this->Backup->backup();
 			}
 			elseif ($request->posted('funcbtn2'))
 			{
 				// Restore the backup
-				$view->success = $this->Backup->restore();
+				$view->success2 = $this->Backup->restore();
 			}
 		}
 		

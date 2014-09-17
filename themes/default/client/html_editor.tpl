@@ -12,10 +12,10 @@ jQuery(document).ready(function () {
 		jQuery.post('{{ @url('api/files') }}', {dir:dir}, function (data) {
 			jQuery('.files').children().remove();
 		
-			var tbl = jQuery('<table border="1"></table>');
+			var tbl = jQuery('<table class="html-editor-files"></table>');
 			var files = data.files;
 			if (dir != '/' && dir != '') {
-				var row = jQuery('<tr><td><a href="#"><img src="{{ @theme('icons/webdir.png') }}" />..</a></td></tr>');
+				var row = jQuery('<tr><td><a href="#"><img src="{{ @theme('icons/webdir.png') }}" class="icon" />..</a></td></tr>');
 				row.find('a').click(function (dir) {
 					return function () {
 						WebEditor.list(dir+'/');
@@ -29,7 +29,7 @@ jQuery(document).ready(function () {
 				if (files[j].isdir)
 				{
 					// Display directory row
-					var row = jQuery('<tr><td><a href="#"><img src="{{ @theme('icons/webdir.png') }}" />'+files[j].name+'</a></td></tr>');
+					var row = jQuery('<tr><td><a href="#"><img src="{{ @theme('icons/webdir.png') }}" class="icon" />'+files[j].name+'</a></td></tr>');
 					var onNavigate = function (dir, file) {
 						return function () {
 							WebEditor.list(dir+file+'/');
@@ -44,7 +44,7 @@ jQuery(document).ready(function () {
 					// Display file row
 					if (files[j].name.substring(files[j].name.length-4, files[j].name.length).toLowerCase() == 'html')
 					{
-						var row = jQuery('<tr><td><a href="#"><img src="{{ @theme('icons/webfile.png') }}" />'+files[j].name+'</a></td></tr>');
+						var row = jQuery('<tr><td><a href="#"><img src="{{ @theme('icons/webfile.png') }}" class="icon" />'+files[j].name+'</a></td></tr>');
 						row.find('a').click(function (dir, file) {
 							return function () {
 								WebEditor.editFile(dir, file);
@@ -55,6 +55,32 @@ jQuery(document).ready(function () {
 					}
 				}
 			}
+			
+			var row = jQuery('<tr class="new"><td><a href="#"><img src="{{ @theme('icons/webfile.png') }}" class="icon" />Create a new file...</a></td></tr>');
+			row.find('a').click(function(dir) {
+				return function() {
+					var file = prompt('Enter the new filename:');
+					if (file !== null && file !== false)
+					{
+						jQuery.post('{{ @url('api/file/new') }}', {'file':dir+file}, function (dir) {
+							return function (data) {
+								if (data.success === true)
+								{
+									alert('Successfully created "'+file+'"');
+									WebEditor.list(dir);
+								}
+								else
+								{
+									alert('ERROR: '+data.error);
+								}
+							}
+						}(dir));
+					}
+					return false;
+				};
+			}(dir));
+			tbl.append(row);
+			
 			jQuery('.files').append(tbl);
 		});
 	};
@@ -83,7 +109,7 @@ jQuery(document).ready(function () {
 	};
 	
 	WebEditor.initEditor = function () {
-		var htmlEditorDiv = jQuery('<div class="html-editor-frame"><textarea id="html-editor" style="width:100%;height:350px"></textarea><button id="save">Save</button><button id="cancel">Cancel</button></div>');
+		var htmlEditorDiv = jQuery('<div class="html-editor-frame"><p>Editing: '+WebEditor.file+'</p><textarea id="html-editor" style="width:100%;height:350px"></textarea><div class="row"><button id="save">Save</button><button id="cancel">Cancel</button></div></div>');
 		htmlEditorDiv.find('textarea').val(WebEditor.content);
 		
 		htmlEditorDiv.find('#save').click(function () {
@@ -96,7 +122,7 @@ jQuery(document).ready(function () {
 				}
 				else
 				{
-					alert('Error saving file');
+					alert('Error saving file - '+data.error);
 				}
 			});
 		});
@@ -114,7 +140,7 @@ jQuery(document).ready(function () {
 	WebEditor.list('/');
 });
 </script>
-
+<p>To edit an HTML file, please click on the files listed below.</p>
 <div class="files">
 		<!-- Placeholder -->
 </div>

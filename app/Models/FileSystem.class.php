@@ -47,7 +47,7 @@ class FileSystem extends Model
 	{
 		$dir = $this->filterDir($dir);
 		$d = new Dir($this->getUserDir().$dir);
-		return $d->create(0644);
+		return $d->create(0777);
 	}
 	
 	function touch ($file)
