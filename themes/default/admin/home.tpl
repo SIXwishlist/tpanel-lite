@@ -1,4 +1,5 @@
 <script type="text/javascript" src="{{ @theme('js/jquery.js') }}"></script>
+<script type="text/javascript" src="{{ @theme('js/dialog.js') }}"></script>
 <script type="text/javascript">
 jQuery(document).ready(function () {
 	var UserList = {};
@@ -25,8 +26,8 @@ jQuery(document).ready(function () {
 	
 	UserList.list = function () {
 		jQuery.get('{{ @url('api/users/') }}'+UserList.page.toString(), function (result) {
-			jQuery('.user-list').children().remove();
-			var tbl = jQuery('<table width="100%"></table>');
+			jQuery('.user-list-panel').children().remove();
+			var tbl = jQuery('<table width="100%" class="user-list"></table>');
 			
 			var row = jQuery('<tr></tr>');
 			row.append(UserList.headerCell('Username'));
@@ -43,7 +44,7 @@ jQuery(document).ready(function () {
 				userLink.html(users[j].username);
 				userLink.click(function(userId) {
 					return function () {
-						alert(userId);
+						UserList.showUser(userId);
 						return false;
 					};
 				}(parseInt(users[j].user_id)));
@@ -67,14 +68,16 @@ jQuery(document).ready(function () {
 			UserList.count = result.count;
 			UserList.perPage = result.perPage;
 			
-			jQuery('.user-list').append(tbl);
-			jQuery('.user-list').append(UserList.getPaginator());
+			jQuery('.user-list-panel').append(tbl);
+			jQuery('.user-list-panel').append(UserList.getPaginator());
 		});
 	};
 	
 	UserList.showUser = function (userId) {
 		jQuery.get('{{ @url('api/user/') }}'+userId, function (user) {
-			
+			Dialog.show('user-edit', function (dlg) {
+				
+			});
 		});
 	};
 	
@@ -82,6 +85,13 @@ jQuery(document).ready(function () {
 		var pg = jQuery('<ul class="paginator"></ul>');
 		for(var j=0;j<Math.ceil(UserList.count/UserList.perPage);j++){
 			var link = jQuery('<li><a href="#">'+(j+1)+'</a></li>');
+			link.find('a').click(function(page) {
+				return function() {
+					UserList.page = page;
+					UserList.list();
+					return false;
+				};
+			}(j));
 			pg.append(link);
 		}
 		return pg;
@@ -90,7 +100,47 @@ jQuery(document).ready(function () {
 	UserList.list();
 });
 </script>
-<div class="user-list"></div>
+<div class="user-list-panel"></div>
+<div class="overlay">
+	<div class="dialog" id="user-edit">
+		<div class="row">
+			<label>Username</label>
+			<div class="field" id="username"></div>
+		</div>
+		<div class="row">
+			<label>Email</label>
+			<div class="field">
+				<input type="text" id="email" />
+			</div>
+		</div>
+		<div class="row">
+			<label>Full Name</label>
+			<div class="field">
+				<input type="text" id="full_name" />
+			</div>
+		</div>
+		<div class="row">
+			<label>Web Space</label>
+			<div class="field">
+				<input type="text" id="webspace" /> MB
+			</div>
+		</div>
+		<div class="row">
+			<label>User Level</label>
+			<div class="field">
+				<select id="user_level">
+					<option value="0">Activation Required</option>
+					<option value="1">Client</option>
+					<option value="2">Administrator</option>
+				</select>
+			</div>
+		</div>
+		<div class="row">
+			<button class="ok-btn">Save</button>
+			<button class="cancel-btn">Cancel</button>
+		</div>
+	</div>
+</div>
 <div class="button-panel">
 	<button id="new">Create New User</button>
 </div>

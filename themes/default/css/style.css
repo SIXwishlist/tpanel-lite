@@ -407,3 +407,44 @@ table.backup-files tr:nth-child(2n+1) {
 	margin-left:auto;
 	margin-right:auto;
 }
+
+table.user-list {
+	border:1px solid #e0e0e0;
+}
+
+table.user-list tr:first-child {
+	background:#e0e0e0;
+}
+
+table.user-list tr:nth-child(2n) {
+	background:#E1EDF4;
+}
+
+table.user-list tr:not(:first-child):hover {
+	background:#BEDAEA;
+}
+
+ul.paginator {
+	list-style:none;
+	margin:5px 0;
+	padding:0;
+}
+
+ul.paginator:before {
+	content:"Page:";
+}
+
+ul.paginator li {
+	display:inline-block;
+}
+
+ul.paginator li a {
+	display:block;
+	width:18px;
+	padding:4px 0;
+	background:-moz-linear-gradient(top,#eee,#ccc);
+	border:1px solid #ddd;
+	text-decoration:none;
+	text-align:center;
+	color:#000;
+}

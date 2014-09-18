@@ -44,7 +44,8 @@ class Request
 	protected function generateFileArray ($file)
 	{
 		return ['filename' => $file['name'],
-				'size' => $file['size'], 
+				'size' => $file['size'],
+				'error' => isset($file['error']) ? $file['error'] : false,
 				'tmp' => $file['tmp_name']];
 	}
 	

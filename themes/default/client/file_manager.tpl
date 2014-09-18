@@ -1,4 +1,5 @@
 <script type="text/javascript" src="{{ @theme('js/jquery.js') }}"></script>
+<script type="text/javascript" src="{{ @theme('js/dialog.js') }}"></script>
 <script type="text/javascript" src="{{ @theme('js/filemanager.js') }}"></script>
 <script type="text/javascript">
 	var FileManager = {};
