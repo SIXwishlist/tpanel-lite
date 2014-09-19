@@ -140,7 +140,7 @@ form {
 	display:block;
 }
 
-.row input[type="text"], .row input[type="password"], .row input[type="email"], .row input[type="file"] {
+.row input[type="text"], .row input[type="password"], .row input[type="email"], .row input[type="file"], .row select {
 	border:none;
 	font-size:1.5em;
 	background:-moz-linear-gradient(top,#eee 0%, #fff 20%);

@@ -26,6 +26,16 @@ class Request
 		$this->params = array();
 	}
 	
+	function isHTTPS ()
+	{
+	
+	}
+	
+	function getDomainName ()
+	{
+	
+	}
+	
 	function get ($key, $default = null)
 	{
 		return isset($this->get[$key]) ? $this->get[$key] : $default;

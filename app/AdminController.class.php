@@ -8,7 +8,7 @@ class AdminController extends AdminBase
 {	
 	function home ($request, $view)
 	{
-		$view->title = 'Home';
+		$view->title = 'User List';
 		$view->render('home');
 	}
 	

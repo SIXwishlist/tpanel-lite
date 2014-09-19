@@ -36,13 +36,24 @@ class Path
 		self::$uri = $uri;
 	}
 	
-	public static function web ($path)
+	public static function web ($path, $fullUrl = false)
 	{
 		if (substr($path, 0, 1) === '/')
 		{
 			$path = substr($path, 1);
 		}
-		return self::$uri.$path;
+		if ($fullUrl === true)
+		{
+			$r = new Request();
+			$url = $r->isHTTPS() ? 'https' : 'http';
+			$url .= '://';
+			$url .= $r->getDomainName().'/';
+			return $url.self::$url.$path;
+		}
+		else
+		{
+			return self::$uri.$path;
+		}
 	}
 	
 	public static function local ($path)

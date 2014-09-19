@@ -4,6 +4,8 @@ namespace App;
 
 class UserController extends AdminBase
 {
+	protected $jsonOnly = true;
+	
 	function listUsers ($request, $view)
 	{
 		$page = (int)$request->param('page', 0);

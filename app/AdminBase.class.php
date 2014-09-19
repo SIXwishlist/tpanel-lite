@@ -7,13 +7,24 @@ use Base\App;
 class AdminBase extends Controller
 {
 	protected $userId;
+	protected $jsonOnly = false;
 	
 	function init ($request, $view)
 	{
 		if (!App::Auth('Admin')->enabled())
 		{
-			App::flash('You must be an administrator to use this system');
-			App::redirect('@LoginController::admin');
+			if ($this->jsonOnly === true)
+			{
+				$view->success = false;
+				$view->error = 'Session has expired';
+				$view->renderAsJSON();
+				App::complete();
+			}
+			else
+			{
+				App::flash('You must be an administrator to use this system');
+				App::redirect('@LoginController::admin');
+			}
 		}
 		else
 		{

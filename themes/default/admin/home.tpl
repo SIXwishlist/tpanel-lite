@@ -24,8 +24,8 @@ jQuery(document).ready(function () {
 		return levels[lvl];
 	};
 	
-	UserList.list = function () {
-		jQuery.get('{{ @url('api/users/') }}'+UserList.page.toString(), function (result) {
+	UserList.list = function (page) {
+		jQuery.get('{{ @url('api/users/') }}'+page, function (result) {
 			jQuery('.user-list-panel').children().remove();
 			var tbl = jQuery('<table width="100%" class="user-list"></table>');
 			
@@ -75,6 +75,7 @@ jQuery(document).ready(function () {
 	
 	UserList.showUser = function (userId) {
 		jQuery.get('{{ @url('api/user/') }}'+userId, function (user) {
+			Form.init('user-edit', user.user);
 			Dialog.show('user-edit', function (dlg) {
 				
 			});
@@ -97,7 +98,7 @@ jQuery(document).ready(function () {
 		return pg;
 	};
 	
-	UserList.list();
+	UserList.list(0);
 });
 </script>
 <div class="user-list-panel"></div>

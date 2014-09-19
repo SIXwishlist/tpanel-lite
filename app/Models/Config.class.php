@@ -67,7 +67,7 @@ class Config extends Model
 	
 	function getFrontendURL ()
 	{
-		return Path::web('/');
+		return Path::web('/', true);
 	}
 	
 	function getAdminEmail ()
@@ -108,6 +108,11 @@ class Config extends Model
 			fclose($f);
 			return true;
 		}
+	}
+	
+	function getNewUserSpace ()
+	{
+		return $this->get('free_space');
 	}
 	
 	function toArray ()

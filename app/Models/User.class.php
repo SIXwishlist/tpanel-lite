@@ -137,7 +137,7 @@ class User extends DbModel
 		{
 			$this->userId = $id;
 			$d = new Dir($this->Config->getUserDir().'/'.$data['username']);
-			$d->create(0666);
+			$d->create(0777);
 		}
 		return $id;
 	}
