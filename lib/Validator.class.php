@@ -1,5 +1,5 @@
 <?php
-// COMPLETE
+
 /**
  * Validator
  *
@@ -12,6 +12,7 @@ namespace Base;
 
 class Validator
 {
+	// Error message strings
 	const MSG_REQUIRED = '%s is a required field';
 	const MSG_RANGE1 = '%s must be a value between %d and %d';
 	const MSG_RANGE2 = '%s cannot be lower than %d';
@@ -29,10 +30,14 @@ class Validator
 	const MSG_EQUALS = '%s must be "%s"';
 	const MSG_SAME = '"%s" and "%s" are not the same';
 	
+	// Dataset used in validation
 	protected $data;
+	// Validation message list
 	protected $messages;
+	// Dataset key label mapping
 	protected $labels;
 	
+	// Constructor
 	private function __construct ($data)
 	{
 		$this->data = $data;
@@ -40,6 +45,7 @@ class Validator
 		$this->labels = null;
 	}
 	
+	// Sets the key label mapping via an associative array
 	function labels ($data)
 	{
 		$this->labels = $data;
@@ -47,6 +53,8 @@ class Validator
 		return $this;
 	}
 	
+	// Returns a label for a key (if it exists),
+	// otherwise a human-readable version of the ID
 	protected function label ($key)
 	{
 		if (isset($this->labels[$key]))
@@ -59,27 +67,33 @@ class Validator
 		}
 	}
 	
+	// Returns an error from the message list (first is default)
 	function error ($index = 0)
 	{
 		return $this->messages[$index];
 	}
 	
+	// Returns the list of error messages
 	function errors ()
 	{
 		return $this->messages;
 	}
 	
+	// Returns true if validation passed without errors
 	function success ()
 	{
 		return is_array($this->messages) && count($this->messages) == 0;
 	}
 	
+	// Creates a new Validator for a set of data
 	public static function evaluate ($data)
 	{
 		return new Validator($data);
 	}
 	
-	protected function add_message ($message, $generic, $params)
+	// Adds a custom validation error ($message), the generic message ($generic),
+	// and any arguments needed for the message ($params)
+	protected function addMessage ($message, $generic, $params)
 	{
 		if ($message === null)
 		{
@@ -91,6 +105,8 @@ class Validator
 		}
 	}
 	
+	// [Validation rule]
+	// Ensures that a key is required to exist and not be empty
 	function required ($key, $msg = null)
 	{
 		if (is_array($key))
@@ -114,64 +130,73 @@ class Validator
 		{
 			if (!isset($this->data[$key]) || strlen(trim($this->data[$key])) < 1)
 			{
-				$this->add_message($msg, self::MSG_REQUIRED, array($this->label($key)));
+				$this->addMessage($msg, self::MSG_REQUIRED, array($this->label($key)));
 			}
 		}
 		
 		return $this;
 	}
 	
+	// Checks if a string is a valid phone number by counting the digits
 	protected function valid_phone ($str, $digits)
 	{
 		$str = preg_replace('/[\s\-\.\(\)]/', '', $str);
 		return ctype_digit($str) && strlen($str) >= $digits;
 	}
 	
+	// [Validation rule]
+	// Determines if a key is a valid phone number
 	function phone ($key, $digits = 10, $msg = null)
 	{
-		if ($this->has_input($key) && !$this->valid_phone($this->data[$key], $digits))
+		if ($this->hasInput($key) && !$this->valid_phone($this->data[$key], $digits))
 		{
-			$this->add_message($msg, self::MSG_TELEPHONE, array($this->label($key)));
+			$this->addMessage($msg, self::MSG_TELEPHONE, array($this->label($key)));
 		}
 		return $this;
 	}
 	
+	// [Validation rule]
+	// Ensures that a key must fall within a certain range ($low - $high)
 	function range ($key, $low, $high = false, $msg = null)
 	{
 		if ($low !== false && $high !== false)
 		{
-			if ($this->has_input($key) && ($this->data[$key] < $low || $this->data[$key] > $high))
+			if ($this->hasInput($key) && ($this->data[$key] < $low || $this->data[$key] > $high))
 			{
-				$this->add_message($msg, self::MSG_RANGE1, array($this->label($key), $low, $high));
+				$this->addMessage($msg, self::MSG_RANGE1, array($this->label($key), $low, $high));
 			}
 		}
 		elseif ($low !== false)
 		{
-			if ($this->has_input($key) && $this->data[$key] < $low)
+			if ($this->hasInput($key) && $this->data[$key] < $low)
 			{
-				$this->add_message($msg, self::MSG_RANGE2, array($this->label($key), $low));
+				$this->addMessage($msg, self::MSG_RANGE2, array($this->label($key), $low));
 			}
 		}
 		else
 		{
-			if ($this->has_input($key) && $this->data[$key] > $high)
+			if ($this->hasInput($key) && $this->data[$key] > $high)
 			{
-				$this->add_message($msg, self::MSG_RANGE3, array($this->label($key), $high));
+				$this->addMessage($msg, self::MSG_RANGE3, array($this->label($key), $high));
 			}
 		}
 		
 		return $this;
 	}
 	
+	// [Validation rule]
+	// Determines if a key is a floating point decimal number
 	function decimal ($key, $msg = null)
 	{
-		if ($this->has_input($key) && !preg_match('/^([0-9]+\.[0-9]+|[0-9]+)$/', $this->data[$key]))
+		if ($this->hasInput($key) && !preg_match('/^([0-9]+\.[0-9]+|[0-9]+)$/', $this->data[$key]))
 		{
-			$this->add_message($msg, self::MSG_DECIMAL, array($this->label($key)));
+			$this->addMessage($msg, self::MSG_DECIMAL, array($this->label($key)));
 		}
 		return $this;
 	}
 	
+	// [Validation rule]
+	// Determines if a key is entirely numeric (integers only)
 	function numeric ($key, $msg = null)
 	{
 		if (is_array($key))
@@ -193,20 +218,22 @@ class Validator
 		}
 		else
 		{
-			if ($this->has_input($key) && !ctype_digit($this->data[$key]))
+			if ($this->hasInput($key) && !ctype_digit($this->data[$key]) && ($this->data[$key][0] == '-' && !ctype_digit(substr($this->data[$key], 1))))
 			{
-				$this->add_message($msg, self::MSG_NUMERIC, array($this->label($key)));
+				$this->addMessage($msg, self::MSG_NUMERIC, array($this->label($key)));
 			}
 		}
 		
 		return $this;
 	}
 	
+	// [Validation rule]
+	// 
 	function regex ($key, $pattern, $msg = null)
 	{
-		if ($this->has_input($key) && !preg_match($pattern, $this->data[$key]))
+		if ($this->hasInput($key) && !preg_match($pattern, $this->data[$key]))
 		{
-			$this->add_message($msg, self::MSG_REGEX, array($this->label($key)));
+			$this->addMessage($msg, self::MSG_REGEX, array($this->label($key)));
 		}
 		
 		return $this;
@@ -214,9 +241,9 @@ class Validator
 	
 	function callback ($key, $callback, $msg = null)
 	{
-		if ($this->has_input($key) && !call_user_func($callback, $this->data[$key]))
+		if ($this->hasInput($key) && !call_user_func($callback, $this->data[$key]))
 		{
-			$this->add_message($msg, self::MSG_CALLBACK, array($this->label($key)));
+			$this->addMessage($msg, self::MSG_CALLBACK, array($this->label($key)));
 		}
 		
 		return $this;
@@ -224,9 +251,9 @@ class Validator
 	
 	function email ($key, $msg = null)
 	{
-		if ($this->has_input($key) && filter_var($this->data[$key], FILTER_VALIDATE_EMAIL) === false)
+		if ($this->hasInput($key) && filter_var($this->data[$key], FILTER_VALIDATE_EMAIL) === false)
 		{
-			$this->add_message($msg, self::MSG_EMAIL, array($this->label($key)));
+			$this->addMessage($msg, self::MSG_EMAIL, array($this->label($key)));
 		}
 		
 		return $this;
@@ -234,26 +261,26 @@ class Validator
 	
 	function currency ($key, $msg = null)
 	{
-		if ($this->has_input($key) && !preg_match('/^[0-9]+($|\.[0-9]{2}$)/', $this->data[$key]))
+		if ($this->hasInput($key) && !preg_match('/^[0-9]+($|\.[0-9]{2}$)/', $this->data[$key]))
 		{
-			$this->add_message($msg, self::MSG_CURRENCY, array($this->label($key)));
+			$this->addMessage($msg, self::MSG_CURRENCY, array($this->label($key)));
 		}
 		
 		return $this;
 	}
 	
-	function has_input ($key)
+	function hasInput ($key)
 	{
 		return isset($this->data[$key]) && strlen($this->data[$key]) > 0;
 	}
 	
 	function same ($key1, $key2, $msg = null)
 	{
-		if ($this->has_input($key1) || $this->has_input($key2))
+		if ($this->hasInput($key1) || $this->hasInput($key2))
 		{
 			if (strcmp($this->data[$key1], $this->data[$key2]) !== 0)
 			{
-				$this->add_message($msg, self::MSG_SAME, array($this->label($key1), $this->label($key2)));
+				$this->addMessage($msg, self::MSG_SAME, array($this->label($key1), $this->label($key2)));
 			}
 		}
 		
@@ -264,23 +291,23 @@ class Validator
 	{
 		if ($high === false)
 		{
-			if ($this->has_input($key) && strlen($this->data[$key]) < $low)
+			if ($this->hasInput($key) && strlen($this->data[$key]) < $low)
 			{
-				$this->add_message($msg, self::MSG_LENGTH1, array($this->label($key), $low));
+				$this->addMessage($msg, self::MSG_LENGTH1, array($this->label($key), $low));
 			}
 		}
 		elseif ($low === false)
 		{
-			if ($this->has_input($key) && strlen($this->data[$key]) > $high)
+			if ($this->hasInput($key) && strlen($this->data[$key]) > $high)
 			{
-				$this->add_message($msg, self::MSG_LENGTH2, array($this->label($key), $high));
+				$this->addMessage($msg, self::MSG_LENGTH2, array($this->label($key), $high));
 			}
 		}
 		else
 		{
-			if ($this->has_input($key) && (strlen($this->data[$key]) > $high || strlen($this->data[$key]) < $low))
+			if ($this->hasInput($key) && (strlen($this->data[$key]) > $high || strlen($this->data[$key]) < $low))
 			{
-				$this->add_message($msg, self::MSG_LENGTH3, array($this->label($key), $low, $high));
+				$this->addMessage($msg, self::MSG_LENGTH3, array($this->label($key), $low, $high));
 			}
 		}
 		
@@ -289,9 +316,9 @@ class Validator
 	
 	function equals ($key, $value, $msg = null)
 	{
-		if ($this->has_input($key) && strcmp($this->data[$key], $value) != 0)
+		if ($this->hasInput($key) && strcmp($this->data[$key], $value) != 0)
 		{
-			$this->add_message($msg, self::MSG_EQUALS, array($this->label($key), $value));
+			$this->addMessage($msg, self::MSG_EQUALS, array($this->label($key), $value));
 		}
 		
 		return $this;
@@ -301,7 +328,7 @@ class Validator
 	{
 		if ($case !== true)
 		{
-			$this->add_message($msg, 'Assertion failed in Validator', array());
+			$this->addMessage($msg, 'Assertion failed in Validator', array());
 		}
 		return $this;
 	}

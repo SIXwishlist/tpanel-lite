@@ -64,6 +64,7 @@ class ClientController extends ClientBase
 		$view->title = 'Home';
 		$this->initModel('user', 'file');
 		
+		$view->userUrl = $this->User->getURL();
 		$view->freeSpacePercent = $this->getFreeSpacePercent();
 		$view->render('home');
 	}

@@ -17,6 +17,7 @@ class DbModel extends Model
 	protected $db;
 	protected $table;
 	protected $primaryKey;
+	protected $order = null;
 	
 	function __construct ()
 	{
@@ -134,15 +135,21 @@ class DbModel extends Model
 		return $this;
 	}
 	
+	function order ($key, $asc)
+	{
+		$this->order = [$key, $asc];
+		return $this;
+	}
+	
 	function rows ()
 	{
 		if ($this->display !== null)
 		{
-			$q = $this->db->sql(sprintf('SELECT * FROM `%s` LIMIT %d, %d', $this->table, $this->display[0], $this->display[1]));
+			$q = $this->db->sql(sprintf('SELECT * FROM `%s` %s LIMIT %d, %d', $this->table, $this->orderString(), $this->display[0], $this->display[1]));
 		}
 		else
 		{
-			$q = $this->db->sql(sprintf('SELECT * FROM `%s`', $this->table));
+			$q = $this->db->sql(sprintf('SELECT * FROM `%s` %s', $this->table, $this->orderString()));
 		}
 		if ($q->execute())
 		{
@@ -164,6 +171,18 @@ class DbModel extends Model
 		else
 		{
 			return false;
+		}
+	}
+	
+	protected function orderString ()
+	{
+		if ($this->order == null)
+		{
+			return '';
+		}
+		else
+		{
+			return sprintf('ORDER BY `%s` %s', $this->order[0], $this->order[1]);
 		}
 	}
 }

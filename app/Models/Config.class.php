@@ -20,7 +20,7 @@ class Config extends Model
 		$this->conf = null;
 		$this->dbConf = null;
 		$this->keys = ['web_host_name', 'free_space', 'admin_email', 
-		               'theme', 'user_dir'];
+		               'theme', 'user_dir', 'user_url'];
 		$this->dbKeys = ['server', 'username', 'password',
 		                 'database', 'prefix'];
 		$this->file = App::Data('tpanel.conf')->getFullPath();

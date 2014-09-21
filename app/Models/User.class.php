@@ -24,6 +24,11 @@ class User extends DbModel
 		$this->userId = $uid;
 	}
 	
+	function getURL ()
+	{
+		return $this->Config->get('user_url').'/'.$this->usernameFromId($this->userId);
+	}
+	
 	function usernameFromId ($uid)
 	{
 		return $this->filter('user_id', $uid)->data('username');
@@ -31,7 +36,7 @@ class User extends DbModel
 	
 	function getPath ()
 	{
-		return $this->Config->getUserDir().'/'.$this->User->usernameFromId($this->userId).'/';
+		return $this->Config->getUserDir().'/'.$this->usernameFromId($this->userId).'/';
 	}
 	
 	function availableSpace ()
@@ -196,6 +201,7 @@ class User extends DbModel
 		$template->full_name = $r->data('full_name');
 		$template->activation_code = $r->data('activation_code');
 		$template->base_url = $this->Config->getFrontendURL();
+		$template->user_url = $this->getURL();
 		$template->user_id = $this->userId;
 		
 		$m = new Mail();
@@ -224,7 +230,7 @@ class User extends DbModel
 	function listUsers ($page = 0)
 	{
 		// NOTE: DB calls
-		return $this->display($this->perPage, $page)->rows();
+		return $this->display($this->perPage, $page)->order('username', 'asc')->rows();
 	}
 	
 	function count ()

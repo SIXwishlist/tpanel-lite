@@ -1,5 +1,6 @@
 		<ul class="stats">
 		  <li><div class="title">Web Space: </div><div class="progress-bar"><div class="progress blue" style="width:{{ @freeSpacePercent }}%"> </div></div></li>
+		  <li><div class="title">Homepage: </div><div class="text"><a href="{{ @userUrl }}" target="_blank">{{ @userUrl }}</a></div></li>
 		</ul>
 		<div style="clear:both"></div>
 		<ul class="icons">

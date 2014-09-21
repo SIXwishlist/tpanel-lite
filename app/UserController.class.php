@@ -1,6 +1,7 @@
 <?php
 
 namespace App;
+use Base\App;
 
 class UserController extends AdminBase
 {
@@ -19,6 +20,17 @@ class UserController extends AdminBase
 	function removeUser ($request, $view)
 	{
 		$user = $request->param('user', false);
+		
+		if ((int)$user === (int)App::Auth('Admin')->get('userId'))
+		{
+			$view->user_success = false;
+			$view->backup_success = false;
+			$view->file_success = false;
+			$view->message = 'You cannot delete your own account';
+			$view->renderAsJSON();
+			return;
+		}
+		
 		$username = $this->User->get($user)->username;
 		$this->FileSystem->setUser($username);
 		$this->Backup->setUser($user);

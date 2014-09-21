@@ -1,53 +1,57 @@
 {display(success)}
 	{if $success}
-		Configuration saved successfully
+		<div class="alert success">Configuration saved successfully</div>
 	{else}
-		Configuration has errors
+		<div class="alert danger">Configuration has errors</div>
 	{end}
 {end}
 {{form->open()}}
 <fieldset><legend>Web Host Configuration</legend>
 	<div class="row">
 		<label>Web Host Name</label>
-		{{form->text('web_host_name')}}
+		<div class="field">{{form->text('web_host_name')}}</div>
 	</div>
 	<div class="row">
 		<label>Free Web Space</label>
-		{{form->text('free_space')}}
+		<div class="field">{{form->text('free_space')}}</div>
 	</div>
 	<div class="row">
 		<label>Administrative Email</label>
-		{{form->text('admin_email')}}
+		<div class="field">{{form->text('admin_email')}}</div>
 	</div>
 	<div class="row">
 		<label>Theme</label>
-		{{form->text('theme')}}
+		<div class="field">{{form->text('theme')}}</div>
 	</div>
 	<div class="row">
 		<label>User Directory</label>
-		{{form->text('user_dir')}}
+		<div class="field">{{form->text('user_dir')}}</div>
+	</div>
+	<div class="row">
+		<label>User URL</label>
+		<div class="field">{{form->text('user_url')}}</div>
 	</div>
 </fieldset>
 <fieldset><legend>Database Configuration</legend>
 	<div class="row">
 		<label>Database Server</label>
-		{{form->text('server')}}
+		<div class="field">{{form->text('server')}}</div>
 	</div>
 	<div class="row">
 		<label>Username</label>
-		{{form->text('username')}}
+		<div class="field">{{form->text('username')}}</div>
 	</div>
 	<div class="row">
 		<label>Password</label>
-		{{form->password('password')}}
+		<div class="field">{{form->password('password')}}</div>
 	</div>
 	<div class="row">
 		<label>Database Name</label>
-		{{form->text('database')}}
+		<div class="field">{{form->text('database')}}</div>
 	</div>
 	<div class="row">
 		<label>Table Prefix</label>
-		{{form->text('prefix')}}
+		<div class="field">{{form->text('prefix')}}</div>
 	</div>
 </fieldset>
 <div class="row">
