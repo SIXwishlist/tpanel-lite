@@ -111,9 +111,29 @@ class User extends DbModel
 		return $v;
 	}
 	
+	function validateModify ($id, $data)
+	{
+		$v = Validator::evaluate($data);
+		$v->required('email')->required('full_name')->required('webspace');
+		$v->email('email');
+		$v->length('password', 6, false, 'Password must be at least 6 characters long');
+		if (isset($data['email']))
+		{
+			$v->assert(!$this->emailInUse($id, $data['email']), 'Email address already in use for another account');
+		}
+		return $v;
+	}
+	
 	protected function userExists ($username)
 	{
 		return $this->filter('username', $username)->min(1);
+	}
+	
+	protected function emailInUse ($id, $email)
+	{
+		// Check if the new email is in use by another account
+		$uid = $this->filter('email', $email)->data('user_id', false);
+		return $uid !== false && $uid != $id;
 	}
 	
 	protected function emailExists ($email)
@@ -137,7 +157,31 @@ class User extends DbModel
 		{
 			$this->userId = $id;
 			$d = new Dir($this->Config->getUserDir().'/'.$data['username']);
-			$d->create(0777);
+			if (!$d->create(0777))
+			{
+				return false;
+			}
+		}
+		return $id;
+	}
+	
+	function createFromAdmin ($data)
+	{
+		$user = array();
+		$user['username'] = $data['username'];
+		$user['password'] = ['MD5(?)' => [$data['password']]];
+		$user['email'] = $data['email'];
+		$user['full_name'] = $data['full_name'];
+		$user['webspace'] = $data['webspace'];
+		$user['user_level'] = $data['user_level'];
+		$id = $this->add($user);
+		if ($id !== false)
+		{
+			$d = new Dir($this->Config->getUserDir().'/'.$data['username']);
+			if (!$d->create(0777))
+			{
+				return false;
+			}
 		}
 		return $id;
 	}
@@ -197,8 +241,31 @@ class User extends DbModel
 	
 	function modify ($userId, $data)
 	{
-		$data = Arr::filter($data, ['user_level', 'username', 'password', 'email', 'full_name', 'webspace']);
+		$data = Arr::filterNonNull($data, ['user_level', 'password', 'email', 'full_name', 'webspace']);
+		
+		// Validate form submissions
+		$v = $this->validateModify($userId, $data);
+		if (!$v->success())
+		{
+			$this->message = $v->error();
+			return false;
+		}
+		
+		// Encrypt the password
+		if (isset($data['password']))
+		{
+			$data['password'] = ['MD5(?)' => [$data['password']]];
+		}
+		
 		// NOTE: DB call
-		return $this->set($userId, $data);
+		if (!$this->set($userId, $data))
+		{
+			$this->message = 'One or more fields is missing';
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 }

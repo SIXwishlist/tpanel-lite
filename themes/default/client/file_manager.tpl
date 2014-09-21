@@ -51,14 +51,14 @@
 	{if $file['info']->isDir() }
 		<tr>
 			<td><input type="checkbox" class="file-check" name="file[]" value="{{ @file['name'] }}" /></td>
-			<td><a href="{{ @url('/files/'.$file['name']) }}"><img src="{{ @theme('icons/icon_dir.png') }}" class="icon" />{{@file['name']}}</a></td>
+			<td><a href="{{ @url('/files/'.$dir.'/'.$file['name']) }}"><img src="{{ @theme('icons/icon_dir.png') }}" class="icon" />{{@file['name']}}</a></td>
 			<td>-</td>
 			<td>{{ @date('Y-m-d H:i:s', $file['info']->getMTime()) }}</td>
 		</tr>
 	{else}
 		<tr>
 			<td><input type="checkbox" class="file-check" name="file[]" value="{{ @file['name'] }}" /></td>
-			<td><img src="{{ @theme('icons/icon_file.png') }}" class="icon" />{{@file['name']}}</a></td>
+			<td><a href="{{ @url('/files/'.$dir.'/'.$file['name']) }}"><img src="{{ @theme('icons/icon_file.png') }}" class="icon" />{{@file['name']}}</a></td>
 			<td>{{ @filesize($file['size']) }}</td>
 			<td>{{ @date('Y-m-d H:i:s', $file['info']->getMTime()) }}</td>
 		</tr>

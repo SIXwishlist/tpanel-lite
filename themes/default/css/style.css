@@ -132,6 +132,7 @@ form {
 
 .row {
 	display:block;
+	box-sizing:border-box;
 	margin-bottom:6px;
 }
 
@@ -140,7 +141,7 @@ form {
 	display:block;
 }
 
-.row input[type="text"], .row input[type="password"], .row input[type="email"], .row input[type="file"], .row select {
+.row input[type="text"], .row input[type="password"], .row input[type="email"], .row input[type="file"], select {
 	border:none;
 	font-size:1.5em;
 	background:-moz-linear-gradient(top,#eee 0%, #fff 20%);

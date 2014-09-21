@@ -59,7 +59,7 @@ class Validator
 		}
 	}
 	
-	function error ($index)
+	function error ($index = 0)
 	{
 		return $this->messages[$index];
 	}

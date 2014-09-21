@@ -28,16 +28,21 @@ class RegistrationController extends Controller
 			// Validate registration
 			$data = $request->postArray();
 			$v = $this->User->validateRegistration($data);
-			if ($v->success() && $this->User->create($data))
+			if (!$v->success())
+			{
+				$view->success = false;
+				$view->errors = $v->errors();
+			}
+			else if (!$this->User->create($data))
+			{
+				$view->success = false;
+				$view->errors = ['User directory could not be created -- please contact the web host administrator'];
+			}
+			else
 			{
 				$this->User->sendActivationEmail($data['email']);
 				$view->success = true;
 				$view->render('register_complete');
-			}
-			else
-			{
-				$view->success = false;
-				$view->errors = $v->errors();
 			}
 		}
 		$view->form = $form;

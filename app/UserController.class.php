@@ -32,7 +32,7 @@ class UserController extends AdminBase
 	
 	function createUser ($request, $view)
 	{
-		$view->success = $this->User->create($request->postArray());
+		$view->success = $this->User->createFromAdmin($request->postArray());
 		$view->message = $this->User->message;
 		
 		$view->renderAsJSON();

@@ -91,6 +91,6 @@ class LoginController extends Controller
 		$view->username = $form->text('username');
 		$view->password = $form->password('password');
 		$view->submit = $form->submit('funcbtn1', ['value' => 'Login']);
-		$view->render('login');
+		$view->render('login_admin');
 	}
 }

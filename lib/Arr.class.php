@@ -1,5 +1,4 @@
 <?php
-// COMPLETE
 /**
  * Arr
  *
@@ -14,6 +13,19 @@ class Arr
 	public static function filter ($data, $keys)
 	{
 		return array_intersect_key($data, array_flip($keys));
+	}
+	
+	public static function filterNonNull ($data, $keys)
+	{
+		$result = array();
+		foreach ($keys as $key)
+		{
+			if (isset($data[$key]) && $data[$key] !== '' && $data[$key] !== null)
+			{
+				$result[$key] = $data[$key];
+			}
+		}
+		return $result;
 	}
 	
 	public static function get ($data, $key, $default = null)

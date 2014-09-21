@@ -50,5 +50,7 @@
 		{{form->text('prefix')}}
 	</div>
 </fieldset>
-{{form->submit('funcbtn1', ['value' => 'Save configuration'])}}
+<div class="row">
+	{{form->submit('funcbtn1', ['value' => 'Save configuration'])}}
+</div>
 {{form->close()}}

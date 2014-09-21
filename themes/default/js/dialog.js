@@ -26,8 +26,13 @@ Dialog.show = function (id, okCallback) {
 };
 
 var Form = {};
-Form.init = function (id, data) {
-	for (var k in data) {
+Form.init = function (id, data, fields) {
+	if (typeof fields === 'undefined')
+	{
+		fields = keys(fields);
+	}
+	for (var k in fields) {
+		k = fields[k];
 		var item = jQuery('#'+id+' #'+k);
 		if (item.length > 0)
 		{
@@ -42,4 +47,14 @@ Form.init = function (id, data) {
 			}
 		}
 	}
+};
+
+Form.data = function (id, keys) {
+	var result = {};
+	for (var key in keys)
+	{
+		key = keys[key];
+		result[key] = jQuery('#'+id+' #'+key).val();
+	}
+	return result;
 };

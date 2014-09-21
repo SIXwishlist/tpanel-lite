@@ -28,12 +28,12 @@ class Request
 	
 	function isHTTPS ()
 	{
-	
+		return !empty($_SERVER['HTTPS']);
 	}
 	
 	function getDomainName ()
 	{
-	
+		return $_SERVER['HTTP_HOST'];
 	}
 	
 	function get ($key, $default = null)

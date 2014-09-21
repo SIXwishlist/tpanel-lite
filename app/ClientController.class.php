@@ -77,20 +77,27 @@ class ClientController extends ClientBase
 		$this->initModel('user', 'file');
 		$dir = $request->param('dir', '');
 		
-		$view->files = $this->FileSystem->listFiles($dir);
-		$view->usagePercent = $this->getFreeSpacePercent();
-		$view->usage = Filter::fileSize($this->FileSystem->used());
-		if ($this->User->availableSpace() === 0)
+		if ($this->FileSystem->isFile($dir))
 		{
-			$view->free = 'Unlimited';
+			$this->FileSystem->download($dir);
 		}
 		else
 		{
-			$view->free = Filter::fileSize($this->User->availableSpace() - $this->FileSystem->used());
+			$view->files = $this->FileSystem->listFiles($dir);
+			$view->usagePercent = $this->getFreeSpacePercent();
+			$view->usage = Filter::fileSize($this->FileSystem->used());
+			if ($this->User->availableSpace() === 0)
+			{
+				$view->free = 'Unlimited';
+			}
+			else
+			{
+				$view->free = Filter::fileSize($this->User->availableSpace() - $this->FileSystem->used());
+			}
+			$view->dir = $dir;
+			
+			$view->render('file_manager');
 		}
-		$view->dir = $dir;
-		
-		$view->render('file_manager');
 	}
 	
 	/**

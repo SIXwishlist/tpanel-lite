@@ -81,6 +81,14 @@ class File
 		return @rename($this->file, $dir.'/'.$name);
 	}
 	
+	function download ()
+	{
+		header('Content-Type: '.$this->mime());
+		header('Content-length: '.$this->size());
+		header(sprintf('Content-Disposition: attachment;file="%s"', addslashes($this->basename())));
+		print $this->contents();
+	}
+	
 	function contents ($newContents = null)
 	{
 		if ($newContents !== null)

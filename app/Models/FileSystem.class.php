@@ -22,6 +22,17 @@ class FileSystem extends Model
 		$this->user = $username;
 	}
 	
+	function isFile ($f)
+	{
+		return File::isFile($this->getUserDir().$this->filterDir($f));
+	}
+	
+	function download ($f)
+	{
+		$fp = new File($this->getUserDir().$this->filterDir($f));
+		$fp->download();
+	}
+	
 	protected function getUserDir ()
 	{
 		if ($this->user === null)
