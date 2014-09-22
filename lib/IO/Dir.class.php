@@ -15,23 +15,29 @@ use Base\Exception;
 
 class Dir
 {
+	// Directory
 	protected $dir;
 	
+	// Sorting constants
 	const FILENAME = 0;
 	const FILENAME_DESC = 1;
 	const SIZE = 2;
 	const SIZE_DESC = 3;
 	
+	
+	// Constructor
 	function __construct ($path)
 	{
 		$this->dir = $path;
 	}
 	
+	// Creates the new directory
 	function create ($perms = 0644)
 	{
 		return @mkdir($this->dir, $perms, true);
 	}
 	
+	// Removes the directory
 	function remove ($recursive = true)
 	{
 		if ($recursive === true)
@@ -67,6 +73,7 @@ class Dir
 		}
 	}
 	
+	// Generates an iterator for a directory
 	public static function iterate ($dir, $recursive = false)
 	{
 		if ($recursive === true)
@@ -80,11 +87,13 @@ class Dir
 		}
 	}
 	
+	// Returns true if the directory exists
 	function exists ()
 	{
 		return file_exists($this->dir) && is_dir($this->dir);
 	}
 	
+	// Copies the directory to a destination
 	function copy ($dest, $recursive = false)
 	{
 		$dir = new RecursiveDirectoryIterator($this->dir);
@@ -104,22 +113,26 @@ class Dir
 		return true;
 	}
 	
+	// Returns the basename for the directory
 	function basename ()
 	{
 		return basename($this->dir);
 	}
 	
+	// Moves the directory to a destination
 	function move ($dest)
 	{
 		return $this->copy($dest) && $this->remove(true);
 	}
 	
+	// Renames the directory
 	function rename ($dest)
 	{
 		$dest = basename($dest);
 		return rename($this->dir, dirname($this->dir).'/'.$dest);
 	}
 	
+	// Lists all files in the directory
 	function listAll ($sortBy = self::FILENAME)
 	{
 		$result = array();
@@ -188,11 +201,13 @@ class Dir
 		}
 	}
 	
+	// Returns the directory path
 	function getDir ()
 	{
 		return $this->dir;
 	}
 	
+	// Returns the size of the directory in bytes
 	function size ($recursive = false)
 	{
 		if (!$this->exists())
@@ -220,6 +235,7 @@ class Dir
 		return $size;
 	}
 	
+	// Returns the size of a directory in bytes
 	public static function getSize ($path, $recursive = false)
 	{
 		$d = new Dir($path);

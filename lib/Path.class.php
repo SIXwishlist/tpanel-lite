@@ -13,9 +13,13 @@ use Base\MVC\View;
 
 class Path
 {
+	// Base path (from init)
 	protected static $dir;
+	// Base URI (from init)
 	protected static $uri;
 	
+	
+	// Initializes the base path
 	public static function initDir ($path)
 	{
 		if (substr($path, -1) !== '/')
@@ -25,6 +29,7 @@ class Path
 		self::$dir = $path;
 	}
 	
+	// Initializes the base URI
 	public static function initURI ()
 	{
 		$uri = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
@@ -36,18 +41,19 @@ class Path
 		self::$uri = $uri;
 	}
 	
-	public static function web ($path, $fullUrl = false)
+	// Resolves a URI for use in the application
+	// NOTE: Passing a Request object will offer a full URL
+	public static function web ($path, $request = null)
 	{
 		if (substr($path, 0, 1) === '/')
 		{
 			$path = substr($path, 1);
 		}
-		if ($fullUrl === true)
+		if ($request !== null)
 		{
-			$r = new Request();
-			$url = $r->isHTTPS() ? 'https' : 'http';
+			$url = $request->isHTTPS() ? 'https' : 'http';
 			$url .= '://';
-			$url .= $r->getDomainName().'/';
+			$url .= $request->getDomainName().'/';
 			return $url.self::$url.$path;
 		}
 		else
@@ -56,6 +62,7 @@ class Path
 		}
 	}
 	
+	// Resolves a local path in the application's framework directory
 	public static function local ($path)
 	{
 		if (substr($path, 0, 1) === '/')
@@ -65,6 +72,7 @@ class Path
 		return self::$dir.$path;
 	}
 	
+	// Resolves a URI in the application's current theme path
 	public static function theme ($path)
 	{
 		if (substr($path, 0, 1) === '/')

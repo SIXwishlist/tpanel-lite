@@ -4,7 +4,7 @@
  * App
  *
  * Handles application-specific tasks that are most frequently used or provide
- * a slight advantage for objects that would be created traditional 
+ * a slight advantage for objects that would be created via traditional 
  * instantiation.
  */
 

@@ -1,17 +1,25 @@
 <?php
 
+/**
+ * Admin Controller
+ *
+ * Administrative control panel controller class
+ */
+
 namespace App;
 use Base\App;
 use Base\Form;
 
 class AdminController extends AdminBase
-{	
+{
+	// Renders the main user list page
 	function home ($request, $view)
 	{
 		$view->title = 'User List';
 		$view->render('home');
 	}
 	
+	// Renders the configuration page
 	function config ($request, $view)
 	{
 		$view->title = 'Configuration';
@@ -28,6 +36,7 @@ class AdminController extends AdminBase
 		$view->render('config');
 	}
 	
+	// Admin logout
 	function logout ($request, $view)
 	{
 		App::Auth('Admin')->disable();

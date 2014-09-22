@@ -11,21 +11,34 @@ namespace Base;
 
 class Mail
 {
+	// Email body types
 	const TEXT = 0;
 	const HTML = 1;
 	
+	// Subject
 	protected $subject;
+	// Generated boundary for multipart emails
 	protected $boundary;
+	// Additional headers
 	protected $headers;
+	// Sender
 	protected $from;
-	protected $reply_to;
+	// Reply-to email address
+	protected $replyTo;
+	// Body
 	protected $body;
+	// CC recipients
 	protected $cc;
+	// BCC recipients
 	protected $bcc;
+	// Main recipients
 	protected $to;
+	// Attachments
 	protected $attachments;
+	// Email body type MIMEs
 	protected $mime;
-	protected $generated_header;
+	// Generated header
+	protected $generatedHeader;
 	
 	// Constructor
 	function __construct ()
@@ -33,7 +46,7 @@ class Mail
 		$this->subject = null;
 		$this->headers = array();
 		$this->from = null;
-		$this->reply_to = null;
+		$this->replyTo = null;
 		$this->body = array();
 		$this->cc = array();
 		$this->bcc = array();
@@ -41,20 +54,17 @@ class Mail
 		$this->attachments = array();
 		$this->boundary = null;
 		$this->mime = array(self::TEXT => 'text/plain', self::HTML => 'text/html');
-		$this->generated_header = null;
+		$this->generatedHeader = null;
 	}
 	
 	// Returns the MIME for a file type
-	protected function get_mime ($file)
+	protected function getMime ($file)
 	{
-		$f = finfo_open(FILEINFO_MIME_TYPE);
-		$mime = finfo_file($f, $file);
-		finfo_close($f);
-		return $mime;
+		return (new File($file))->mime();
 	}
 	
 	// Returns the generated boundary
-	protected function get_boundary ($type)
+	protected function getBoundary ($type)
 	{
 		if ($this->boundary === null)
 		{
@@ -64,12 +74,12 @@ class Mail
 	}
 	
 	// Generates headers
-	protected function get_headers ()
+	protected function getHeaders ()
 	{
 		// Avoid redoing the whole thing over
-		if ($this->generated_header !== null)
+		if ($this->generatedHeader !== null)
 		{
-			return $this->generated_header;
+			return $this->generatedHeader;
 		}
 		
 		$body = array();
@@ -77,9 +87,9 @@ class Mail
 		{
 			$body[] = sprintf('From: %s', $this->from);
 		}
-		if ($this->reply_to !== null)
+		if ($this->replyTo !== null)
 		{
-			$body[] = sprintf('Reply-To: %s', $this->reply_to);
+			$body[] = sprintf('Reply-To: %s', $this->replyTo);
 		}
 		if ($this->cc !== null)
 		{
@@ -92,15 +102,15 @@ class Mail
 		
 		if (count($this->attachments) > 0)
 		{
-			$body[] = sprintf('Content-Type: multipart/mixed; boundary="%s"', $this->get_boundary('mixed'));
-			$body[] = sprintf('--%s', $this->get_boundary('mixed'));
+			$body[] = sprintf('Content-Type: multipart/mixed; boundary="%s"', $this->getBoundary('mixed'));
+			$body[] = sprintf('--%s', $this->getBoundary('mixed'));
 			$body[] = '';
 		}
 		
 		// Explicitly define multiple types
 		if (count($this->body) > 1)
 		{
-			$body[] = sprintf('Content-Type: multipart/alternative; boundary="%s"', $this->get_boundary('alt'));
+			$body[] = sprintf('Content-Type: multipart/alternative; boundary="%s"', $this->getBoundary('alt'));
 		}
 		
 		// Add bodies
@@ -108,7 +118,7 @@ class Mail
 		{
 			if (count($this->body) > 1)
 			{
-				$body[] = sprintf('--%s', $this->get_boundary('alt'));
+				$body[] = sprintf('--%s', $this->getBoundary('alt'));
 			}
 			$body[] = sprintf('Content-Type: %s; charset="iso-8859-1"', $this->mime[$type]);
 			$body[] = 'Content-Transfer-Encoding: 7bit';
@@ -120,7 +130,7 @@ class Mail
 		// Signal end of boundary
 		if (count($this->body) > 1)
 		{
-			$body[] = sprintf('--%s--', $this->get_boundary('alt'));
+			$body[] = sprintf('--%s--', $this->getBoundary('alt'));
 		}
 		
 		// Add attachments
@@ -129,20 +139,20 @@ class Mail
 			foreach ($this->attachments as $file => $as_file)
 			{
 				$body[] = '';
-				$body[] = sprintf('--%s', $this->get_boundary('mixed'));
-				$body[] = sprintf('Content-Type: %s; name="%s"', $this->get_mime($file), $as_file === null ? basename($file) : $as_file);
+				$body[] = sprintf('--%s', $this->getBoundary('mixed'));
+				$body[] = sprintf('Content-Type: %s; name="%s"', $this->getMime($file), $as_file === null ? basename($file) : $as_file);
 				$body[] = 'Content-Transfer-Encoding: base64'; 
 				$body[] = 'Content-Disposition: attachment';
 				$body[] = '';
 				$body[] = chunk_split(base64_encode(file_get_contents($file)));
 			}
-			$body[] = sprintf('--%s--', $this->get_boundary('mixed'));
+			$body[] = sprintf('--%s--', $this->getBoundary('mixed'));
 		}
 		
 		$body[] = '';
 		
-		$this->generated_header = implode("\r\n", $body);
-		return $this->generated_header;
+		$this->generatedHeader = implode("\r\n", $body);
+		return $this->generatedHeader;
 	}
 	
 	// Adds an additional header
@@ -183,7 +193,7 @@ class Mail
 			{
 				// Force boundary to regenerate on each send
 				$this->boundary = null;
-				return mail($args[0], $this->subject, '', $this->get_headers());
+				return mail($args[0], $this->subject, '', $this->getHeaders());
 			}
 		}
 		else
@@ -195,7 +205,7 @@ class Mail
 	// Adds content to the body along with a specified type
 	function body ($content, $type = self::TEXT)
 	{
-		$this->generated_headers = null;
+		$this->generatedHeaders = null;
 		$this->body[$type] = $content;
 		return $this;
 	}
@@ -203,7 +213,7 @@ class Mail
 	// Sets the subject
 	function subject ($title)
 	{
-		$this->generated_headers = null;
+		$this->generatedHeaders = null;
 		$this->subject = $title;
 		return $this;
 	}
@@ -211,7 +221,7 @@ class Mail
 	// Specifies the from address
 	function from ($address)
 	{
-		$this->generated_headers = null;
+		$this->generatedHeaders = null;
 		$this->from = $address;
 		return $this;
 	}
@@ -219,7 +229,7 @@ class Mail
 	// Carbon-copies an address
 	function cc ()
 	{
-		$this->generated_headers = null;
+		$this->generatedHeaders = null;
 		$this->cc = func_get_args();
 		return $this;
 	}
@@ -227,7 +237,7 @@ class Mail
 	// Send to...
 	function to ()
 	{
-		$this->generated_headers = null;
+		$this->generatedHeaders = null;
 		$this->to = func_get_args();
 		return $this;
 	}
@@ -235,7 +245,7 @@ class Mail
 	// Blind carbon-copy
 	function bcc ()
 	{
-		$this->generated_headers = null;
+		$this->generatedHeaders = null;
 		$this->bcc = func_get_args();
 		return $this;
 	}
@@ -243,7 +253,7 @@ class Mail
 	// Adds an attachment
 	function attachment ($file, $as_filename = null)
 	{
-		$this->generated_headers = null;
+		$this->generatedHeaders = null;
 		$this->attachments[$file] = $as_filename;
 		return $this;
 	}

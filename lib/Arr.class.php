@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Arr
  *
@@ -10,11 +11,14 @@ namespace Base;
 
 class Arr
 {
+	// Returns a subset of an array ($data) based on matching keys ($keys)
 	public static function filter ($data, $keys)
 	{
 		return array_intersect_key($data, array_flip($keys));
 	}
 	
+	// Returns a subset of an array ($data) where values matching keys ($keys)
+	// are not empty
 	public static function filterNonNull ($data, $keys)
 	{
 		$result = array();
@@ -28,6 +32,8 @@ class Arr
 		return $result;
 	}
 	
+	// Retrieves an element of an array if it exists, otherwise it safely
+	// returns a default value
 	public static function get ($data, $key, $default = null)
 	{
 		if (isset($data[$key]))

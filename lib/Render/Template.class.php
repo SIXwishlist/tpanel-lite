@@ -1,11 +1,18 @@
 <?php
-// COMPLETE
+
+/**
+ * Template
+ *
+ * Template renderer for the View class
+ */
+
 namespace Base\Render;
 use Base\Render;
 use Base\Template as Engine;
 
 class Template extends Render
 {
+	// Renders the template file
 	function render ()
 	{
 		$file = $this->getRenderFile().'.tpl';

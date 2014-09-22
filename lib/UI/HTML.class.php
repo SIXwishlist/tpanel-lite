@@ -28,6 +28,7 @@ class HTML
 		return $result;
 	}
 	
+	// Returns a complete HTML tag
 	public static function tag ($type, $attr = null, $content = false)
 	{
 		if ($content !== false)
@@ -40,18 +41,19 @@ class HTML
 		}
 	}
 	
+	// Returns a submit button
 	public static function submit ($name, $attr = null)
 	{
 		return self::tag('input', $attr + ['type' => 'submit', 'name' => $name, 'id' => $name]);
 	}
 	
-	// Open tag
+	// Returns an HTML open tag
 	public static function open ($type, $attr = null)
 	{
 		return sprintf('<%s%s>', $type, self::attributes($attr));
 	}
 	
-	// Close
+	// Returns an HTML close tag
 	public static function close ($type)
 	{
 		return sprintf('</%s>', $type);

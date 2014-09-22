@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Backup model
+ *
+ * Encapsulates the backup/restore functionality in tPanel Lite.
+ */
+
 namespace App\Models;
 use Base\MVC\Model\DbModel;
 use Base\App;
@@ -8,23 +14,30 @@ use Base\IO\Zip;
 
 class Backup extends DbModel
 {
+	// Database connection info
 	protected $db = 'main';
 	protected $table = '[backups]';
 	protected $primaryKey = 'user_id';
 	
+	// FileSystem model
 	protected $fs;
+	// Current user ID
 	protected $userId;
 	
+	
+	// Sets the FileSystem model reference
 	function setFileSystem ($fs)
 	{
 		$this->fs = $fs;
 	}
 	
+	// Sets the user ID
 	function setUser ($userId)
 	{
 		$this->userId = $userId;
 	}
 	
+	// Retrieves the user's backup file (false if none exists)
 	function getBackupFile ()
 	{
 		$r = $this->filter('user_id', $this->userId);
@@ -48,6 +61,7 @@ class Backup extends DbModel
 		}
 	}
 	
+	// Destroys a user's backup file
 	function destroy ()
 	{
 		$this->filter('user_id', $this->userId)->clear();
@@ -64,6 +78,7 @@ class Backup extends DbModel
 		}
 	}
 	
+	// Executes a backup on the user's web space
 	function backup ()
 	{
 		$this->User->setUser($this->userId);
@@ -75,6 +90,7 @@ class Backup extends DbModel
 		return $zipResult && $dbResult;
 	}
 	
+	// Restores the backup file to the user's web space
 	function restore ()
 	{
 		$this->User->setUser($this->userId);
@@ -85,6 +101,7 @@ class Backup extends DbModel
 		return $result;
 	}
 	
+	// Lists all files in the backup file
 	function listFiles ()
 	{
 		$file = App::Data($this->getBackupFile())->getFullPath();
@@ -101,6 +118,7 @@ class Backup extends DbModel
 		}
 	}
 	
+	// Returns the date of the last backup
 	function getDate ()
 	{
 		return $this->filter('user_id', $this->userId)->data('backup_time');

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * API Controller
+ *
+ * Provides access to tPanel Lite information for AJAX-based components.
+ */
+
 namespace App;
 use Base\MVC\Controller;
 use Base\App;
@@ -48,6 +54,7 @@ class APIController extends Controller
 		$view->renderAsJSON();
 	}
 	
+	// Returns true if the file size is within user limits
 	protected function canSaveFile ($size)
 	{
 		return $this->User->availableSpace() == 0 || ($this->FileSystem->used() + $size <= $this->User->availableSpace());

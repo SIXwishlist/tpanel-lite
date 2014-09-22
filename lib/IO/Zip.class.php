@@ -12,8 +12,11 @@ use \ZipArchive;
 
 class Zip
 {
+	// ZipArchive reference
 	protected $zip;
 	
+	
+	// Constructor (requires a file and access mode)
 	function __construct ($file, $accessMode = 'r')
 	{
 		$this->zip = new ZipArchive();
@@ -27,6 +30,7 @@ class Zip
 		}
 	}
 	
+	// Adds a directory for archiving
 	function addDirectory ($dir, $recursive = false)
 	{
 		if ($recursive === true)
@@ -64,16 +68,19 @@ class Zip
 		}
 	}
 	
+	// Closes the ZipArchive handle
 	function close ()
 	{
 		return $this->zip->close();
 	}
 	
+	// Extracts all files to a path
 	function extractAll ($path)
 	{
 		return $this->zip->extractTo($path);
 	}
 	
+	// Lists all files in the archive
 	function listAll ($metadata = false)
 	{
 		$files = [];

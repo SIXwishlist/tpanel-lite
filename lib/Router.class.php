@@ -1,12 +1,22 @@
 <?php
 
+/**
+ * Router
+ *
+ * Loads pre-defined mapping of URIs to controllers and actions.  
+ */
+
 namespace Base;
 
 class Router
 {
+	// Route URI tree (URI tree -> action)
 	protected $routes = [];
+	// Route URI tree reversed (action -> URI)
 	protected $reversed = [];
 	
+	
+	// Loads a route file into the URI tree (i.e. routes.conf)
 	function load ($file)
 	{
 		$routes = parse_ini_file($file, true);
@@ -19,6 +29,8 @@ class Router
 		}
 	}
 	
+	// Looks up a controller with named parameters to build a URI
+	// NOTE: An exception is thrown if the URL was not found
 	function reverseLookup ($controller, $params = null)
 	{
 		if (!isset($this->reversed[$controller]))
@@ -39,6 +51,8 @@ class Router
 		return Path::web($url);
 	}
 	
+	// Translates a URI ($route) into a controller and action
+	// False is returned when no match is found
 	function lookup ($route)
 	{
 		// Remove double slashes
@@ -109,6 +123,7 @@ class Router
 		return [$callable, $params];
 	}
 	
+	// Adds a new route and controller-action callable to the URI route tree
 	function add ($route, $callable)
 	{
 		// Remove beginning and ending slashes

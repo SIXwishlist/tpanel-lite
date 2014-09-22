@@ -14,17 +14,24 @@ use Base\Db\Result;
 
 class DbModel extends Model
 {
+	// Database connection
 	protected $db;
+	// Table name
 	protected $table;
+	// Primary key
 	protected $primaryKey;
+	// Field order
 	protected $order = null;
 	
+	
+	// Constructor
 	function __construct ()
 	{
 		parent::__construct();
 		$this->db = App::Database($this->db);
 	}
 	
+	// Generates a new Filter for operating on rows in the table
 	function filter ($key, $value)
 	{
 		// Return DB Filter
@@ -32,6 +39,7 @@ class DbModel extends Model
 		return $f->filter($key, $value);
 	}
 	
+	// Adds a new row to the table
 	function add ($data)
 	{
 		$q = 'INSERT INTO `%s` (%s) VALUES (%s)';
@@ -41,6 +49,7 @@ class DbModel extends Model
 		return $q->execute($params);
 	}
 	
+	// Generates parts for an INSERT row from a data set
 	protected function parseInsertRow ($data)
 	{
 		$keys = '';
@@ -77,12 +86,14 @@ class DbModel extends Model
 		return [$keys, $values, $params];
 	}
 	
+	// Removes an entry based on the primary key
 	function delete ($key)
 	{
 		$q = $this->db->sql(sprintf('DELETE FROM `%s` WHERE `%s` = ?', $this->table, $this->primaryKey));
 		return $q->execute([$key]);
 	}
 	
+	// Returns a single row from the table matching a primary key
 	function get ($id)
 	{
 		$q = $this->db->sql(sprintf('SELECT * FROM `%s` WHERE `%s` = ? LIMIT 1', $this->table, $this->primaryKey));
@@ -96,6 +107,7 @@ class DbModel extends Model
 		}
 	}
 	
+	// Sets result set data for updating
 	function set ($id, $data)
 	{
 		$updateValues = [];
@@ -129,18 +141,21 @@ class DbModel extends Model
 		return $q->execute(array_merge($updateValues, [$id]));
 	}
 	
+	// Sets a viewport for retrieving entries in the table
 	function display ($rowCount, $page)
 	{
 		$this->display = [$page * $rowCount, $rowCount];
 		return $this;
 	}
 	
+	// Sets the field order for retrieving entries in the table
 	function order ($key, $asc)
 	{
 		$this->order = [$key, $asc];
 		return $this;
 	}
 	
+	// Returns all rows in the table
 	function rows ()
 	{
 		if ($this->display !== null)
@@ -161,6 +176,7 @@ class DbModel extends Model
 		}
 	}
 	
+	// Returns a count of all rows in the table
 	function rowCount ()
 	{
 		$q = $this->db->sql(sprintf('SELECT COUNT(*) as row_count FROM `%s`', $this->table));
@@ -174,6 +190,7 @@ class DbModel extends Model
 		}
 	}
 	
+	// Generates the ORDER BY clause in an SQL statement
 	protected function orderString ()
 	{
 		if ($this->order == null)

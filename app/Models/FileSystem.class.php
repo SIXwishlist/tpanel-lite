@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * FileSystem model
+ *
+ * Manages files in the user's web space.
+ */
+
 namespace App\Models;
 use Base\MVC\Model;
 use Base\Arr;
@@ -10,29 +16,36 @@ use Base\Filter;
 
 class FileSystem extends Model
 {
+	// Username
 	protected $user;
 	
+	
+	// Initializes the model
 	function init ()
 	{
 		$this->user = null;
 	}
 	
+	// Sets the username
 	function setUser ($username)
 	{
 		$this->user = $username;
 	}
 	
+	// Returns true if a file exists in the user's web space
 	function isFile ($f)
 	{
 		return File::isFile($this->getUserDir().$this->filterDir($f));
 	}
 	
+	// Forces a file to be downloaded
 	function download ($f)
 	{
 		$fp = new File($this->getUserDir().$this->filterDir($f));
 		$fp->download();
 	}
 	
+	// Returns the user's web space directory
 	protected function getUserDir ()
 	{
 		if ($this->user === null)
@@ -42,12 +55,14 @@ class FileSystem extends Model
 		return $this->Config->getUserDir().'/'.$this->user.'/';
 	}
 	
+	// Returns the amount of space used by the user
 	function used ()
 	{
 		// true = recursive
 		return Dir::getSize($this->getUserDir(), true);
 	}
 	
+	// Removes any path manipulation attempts in files or directories by the user
 	protected function filterDir ($dir)
 	{
 		$dir = str_replace('..', '', $dir);
@@ -55,13 +70,15 @@ class FileSystem extends Model
 		return $dir;
 	}
 	
+	// Creates a new directory
 	function mkdir ($dir)
 	{
 		$dir = $this->filterDir($dir);
 		$d = new Dir($this->getUserDir().$dir);
-		return $d->create(0777);
+		return $d->create(0644);
 	}
 	
+	// Creates a new file
 	function touch ($file)
 	{
 		$file = $this->filterDir($file);
@@ -69,6 +86,7 @@ class FileSystem extends Model
 		return $f->create(0644);
 	}
 	
+	// Removes a file or directory
 	function delete ($file)
 	{
 		$file = $this->getUserDir().$this->filterDir($file);
@@ -84,6 +102,7 @@ class FileSystem extends Model
 		}
 	}
 	
+	// Copies a file or directory
 	function copyFile ($src, $dest)
 	{
 		$src = $this->getUserDir().$this->filterDir($src);
@@ -100,6 +119,7 @@ class FileSystem extends Model
 		}
 	}
 	
+	// Returns metadata for a file or directory
 	function getFileMeta ($file)
 	{
 		$file = $this->getUserDir().$this->filterDir($file);
@@ -130,6 +150,7 @@ class FileSystem extends Model
 		}
 	}
 	
+	// Moves a file or directory
 	function moveFile ($src, $dest)
 	{
 		$src = $this->getUserDir().$this->filterDir($src);
@@ -147,6 +168,7 @@ class FileSystem extends Model
 		}
 	}
 	
+	// Renames a file or directory
 	function renameFile ($src, $dest)
 	{
 		$src = $this->getUserDir().$this->filterDir($src);
@@ -164,6 +186,7 @@ class FileSystem extends Model
 		}
 	}
 	
+	// Saves contents of a string to a file
 	function saveFile ($file, $contents)
 	{
 		$file = $this->getUserDir().$this->filterDir($file);
@@ -172,6 +195,7 @@ class FileSystem extends Model
 		return $f->contents($contents);
 	}
 	
+	// Returns the contents of a file
 	function getContents ($file)
 	{
 		$file = $this->getUserDir().$this->filterDir($file);
@@ -180,6 +204,7 @@ class FileSystem extends Model
 		return $f->contents();
 	}
 	
+	// Uploads a file from the browser
 	function upload ($dir, $request)
 	{
 		$dir = $this->getUserDir().$this->filterDir($dir);
@@ -189,6 +214,7 @@ class FileSystem extends Model
 		return $f->upload($request->file('upload'));
 	}
 	
+	// Returns the metadata for an upload
 	function getUploadMeta ($request)
 	{
 		$file = $this->filterDir(Arr::get($request->file('upload'), 'filename', null));
@@ -196,6 +222,7 @@ class FileSystem extends Model
 		return ['file' => $file, 'size' => $size];
 	}
 	
+	// Lists all files in a directory
 	function listFiles ($dir)
 	{
 		$dir = $this->getUserDir().$this->filterDir($dir);
@@ -244,12 +271,14 @@ class FileSystem extends Model
 		}
 	}
 	
+	// Destroys the user's web space
 	function destroy ()
 	{
 		$d = new Dir($this->getUserDir());
 		return $d->remove(true);
 	}
 	
+	// Returns a usage JSON object for usage statistics
 	function usageAsJSON ()
 	{
 		$colors = ['#8E44AD','#9B59B6','#C0392B','#E74C3C','#2980B9',

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ClientController
+ * Client Controller
  *
  * Provides access to the client-side control panel in tPanel.
  */

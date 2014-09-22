@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Client Controller Base class
+ *
+ * Clisnt-side controller for member access
+ */
+
 namespace App;
 use Base\MVC\Controller;
 use Base\App;

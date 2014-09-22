@@ -1,5 +1,5 @@
 <?php
-// COMPLETE
+
 /**
  * Filter
  *
@@ -11,10 +11,15 @@ use Base\Db;
 
 class Filter
 {
+	// Database connection
 	protected $db;
+	// Table name
 	protected $table;
+	// Result set
 	protected $queryData;
 	
+	
+	// Constructor (requires a DB connection and table name)
 	function __construct ($db, $table)
 	{
 		$this->queryData = null;
@@ -22,6 +27,7 @@ class Filter
 		$this->table = $table;
 	}
 	
+	// Returns generated SQL for the query
 	protected function getSQL ($firstRow = false, $count = false)
 	{
 		$sql = 'SELECT ';
@@ -69,6 +75,7 @@ class Filter
 		return $sql;
 	}
 	
+	// Returns a DELETE SQL statement
 	protected function getDeleteSQL ()
 	{
 		$sql = 'DELETE FROM `'.$this->table.'`';
@@ -103,6 +110,7 @@ class Filter
 		return $sql;
 	}
 	
+	// Returns the parameters for a prepared SQL statement
 	protected function getParams ()
 	{
 		if (count($this->filters) > 0)
@@ -136,6 +144,7 @@ class Filter
 		}
 	}
 	
+	// Checks the first row is populated
 	protected function checkFirstRow ()
 	{
 		if ($this->queryData === null)
@@ -148,6 +157,7 @@ class Filter
 		}
 	}
 	
+	// Returns all rows from the query
 	function rows ()
 	{
 		$q = $this->db->sql($this->getSQL(false));
@@ -156,6 +166,7 @@ class Filter
 		return $q->fetchAll();
 	}
 	
+	// Returns a specific value of data from the result set
 	function data ($key, $default = null)
 	{
 		$this->checkFirstRow();
@@ -169,6 +180,7 @@ class Filter
 		}
 	}
 	
+	// Returns the row count for a Filter query
 	protected function getCount ()
 	{
 		$countSQL = $this->getSQL(false, true);
@@ -195,11 +207,13 @@ class Filter
 		}
 	}
 	
+	// Returns true if the row count is at least a certain number ($count)
 	function min ($count)
 	{
 		return $this->getCount() >= $count;
 	}
 	
+	// Removes all DB entries matched by the filter
 	function clear ()
 	{
 		// Delete where...
@@ -207,6 +221,7 @@ class Filter
 		return $q->execute($this->getParams());
 	}
 	
+	// Adds a filter to the result set
 	function filter ($key, $value)
 	{
 		$this->filters[] = [$key, $value];

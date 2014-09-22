@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Bootstrapper
+ *
+ * Initializes the application and framework with environment information
+ * necessary for functionality.
+ */
+ 
 namespace Base;
 
 // Turn on error reporting

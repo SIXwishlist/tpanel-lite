@@ -12,30 +12,43 @@ use Base\MVC\View;
 
 class Template
 {
+	// PHP tag constants
 	const PHP_START = '<?php ';
 	const PHP_END = ' ?>';
+	
+	// Template source code
 	protected $code;
+	// Output PHP code
 	protected $output;
+	// Template path
 	protected $path = null;
+	// Main template file
 	protected $defaultFile = null;
+	// Template data
 	protected $data = array();
+	// Template function callbacks
 	protected $callbacks = array();
 	
+	
+	// Sets a key-value pair in the template data
 	function __set ($k, $value)
 	{
 		$this->data[$k] = $value;
 	}
 
+	// Returns a value from a key-value pair in the template data
 	function __get ($var)
 	{
 		return $this->data[$var];
 	}
 
+	// Returns true if a key is set in the template data
 	function __isset ($var)
 	{
 		return isset($this->data[$var]);
 	}
 	
+	// Invokes a template function and returns the result, null if the function doesn't exist
 	function __call ($name, $args)
 	{
 		if (isset($this->callbacks[$name]))
@@ -48,6 +61,7 @@ class Template
 		}
 	}
 
+	// Constructor (requires source code)
 	protected function __construct ($code)
 	{
 		$this->code = explode("\n", $code);
@@ -63,6 +77,7 @@ class Template
 		$this->addFunction('flash', array($this, 'getFlash'));
 	}
 
+	// Builds the template to output
 	protected function build ()
 	{
 		if (count($this->code) > 0)
@@ -74,11 +89,13 @@ class Template
 		}
 	}
 
+	// Returns the template output
 	protected function getOutput ()
 	{
 		return $this->output;
 	}
 
+	// Compiles a line from the template source
 	protected function compileLine ($line)
 	{
 		// {{ @statement: }}
@@ -126,36 +143,50 @@ class Template
 		return $line;
 	}
 	
+	// [Template Function]
+	// Returns a resolved URI
 	protected function url ($text)
 	{
 		return Path::web($text);
 	}
 	
+	// [Template Function]
+	// Returns a formatted date from a UNIX timestamp
 	protected function date ($fmt, $timestamp)
 	{
 		return date($fmt, $timestamp);
 	}
 	
+	// [Template Function]
+	// Returns a human-readable file size
 	protected function filesize ($size)
 	{
 		return Filter::fileSize($size);
 	}
 	
+	// [Template Function]
+	// Returns true if a flash message was set
 	protected function hasFlash ()
 	{
 		return View::hasFlash();
 	}
 	
+	// [Template Function]
+	// Returns the flash message
 	protected function getFlash ()
 	{
 		return View::getFlash();
 	}
 	
+	// [Template Function]
+	// Returns a URI resolved to the current theme directory
 	protected function theme ($text)
 	{
 		return Path::theme($text);
 	}
 	
+	// [Template Function]
+	// Includes a template file and executes it
 	protected function tInclude ($file)
 	{
 		try
@@ -168,6 +199,8 @@ class Template
 		}
 	}
 	
+	// [Template Function]
+	// Renders content file or main content with calling object's template data
 	protected function content ($file = null)
 	{
 		if ($file === null)
@@ -198,11 +231,14 @@ class Template
 		}
 	}
 	
+	// [Template Function]
+	// Returns HTML-sanitized data
 	protected function filter ($text)
 	{
 		return Filter::html($text);
 	}
 
+	// Compiles template source code and returns the Template object
 	public static function compile ($code)
 	{
 		$p = new Template($code);
@@ -210,32 +246,38 @@ class Template
 		return $p;
 	}
 	
+	// Sets the template path
 	function setPath ($path)
 	{
 		$this->path = $path;
 	}
 	
+	// Sets the main template file
 	function setFile ($f)
 	{
 		$this->defaultFile = $f;
 	}
 	
+	// Adds a template function matched with a callback
 	function addFunction ($name, $callback)
 	{
 		$this->callbacks[$name] = $callback;
 	}
 	
+	// Returns the PHP output
 	function toPHP ()
 	{
 		return $this->output;
 	}
 	
+	// Renders the template from compiled PHP
 	function render ()
 	{
 		extract($this->data, EXTR_SKIP);
 		eval('?>'.$this->toPHP());
 	}
 	
+	// Renders the template from compiled PHP and returns the output
 	function _render ()
 	{
 		ob_start();
@@ -245,13 +287,14 @@ class Template
 		return $c;
 	}
 	
+	// Returns a Template object from a parsed file
 	public static function fromFile ($file)
 	{
 		if (!File::isFile($file))
 		{
 			throw new Exception('File Not Found', sprintf('Template file "%s" could not be loaded', (new File($file))->basename()));
 		}
-		$contents = file_get_contents($file);
+		$contents = (new File($file))->contents();
 		return self::compile($contents);
 	}
 }

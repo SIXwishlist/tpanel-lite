@@ -1,14 +1,24 @@
 <?php
 
+/**
+ * Admin Controller Base class
+ *
+ * Base class for an admin-only controller
+ */
+
 namespace App;
 use Base\MVC\Controller;
 use Base\App;
 
 class AdminBase extends Controller
 {
+	// Current user ID
 	protected $userId;
+	// Return only JSON responses
 	protected $jsonOnly = false;
 	
+	
+	// Initializes the controller and checks permissions
 	function init ($request, $view)
 	{
 		if (!App::Auth('Admin')->enabled())

@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Config model
+ *
+ * Manages tPanel Lite configuration files
+ */
+
 namespace App\Models;
 use Base\MVC\Model;
 use Base\Arr;
@@ -8,13 +14,21 @@ use Base\Exception;
 
 class Config extends Model
 {
+	// Main configuration file
 	protected $file;
+	// Database configuration file
 	protected $dbFile;
+	// Main config keys
 	protected $keys;
+	// Db config keys
 	protected $dbKeys;
+	// Main configuration dataset
 	protected $conf;
+	// Db configuration dataset
 	protected $dbConf;
 	
+	
+	// Initializes the model
 	function init ()
 	{
 		$this->conf = null;
@@ -27,6 +41,7 @@ class Config extends Model
 		$this->dbFile = App::Data('databases/main.conf')->getFullPath();
 	}
 	
+	// Returns a value for a key in the configuration
 	function get ($key)
 	{
 		if (in_array($key, $this->dbKeys))
@@ -60,26 +75,31 @@ class Config extends Model
 		}
 	}
 	
+	// Returns the main user directory
 	function getUserDir ()
 	{
 		return $this->get('user_dir');
 	}
 	
-	function getFrontendURL ()
+	// Returns the URL to the frontend of tPanel Lite
+	function getFrontendURL ($request)
 	{
-		return Path::web('/', true);
+		return Path::web('/', $request);
 	}
 	
+	// Returns the admin's email address
 	function getAdminEmail ()
 	{
 		return $this->get('admin_email');
 	}
 	
+	// Returns the web host's name
 	function getWebHostName ()
 	{
 		return $this->get('web_host_name');
 	}
 	
+	// Stores the set of data in a file
 	function store ($data)
 	{
 		$confData = Arr::filter($data, $this->keys);
@@ -110,11 +130,13 @@ class Config extends Model
 		}
 	}
 	
+	// Returns the default web space allotted to new users
 	function getNewUserSpace ()
 	{
 		return $this->get('free_space');
 	}
 	
+	// Returns configuration file array
 	function toArray ()
 	{
 		// Combine db and regular configuration files

@@ -12,16 +12,19 @@ use Base\App;
 
 abstract class Model
 {
+	// Constructor
 	function __construct ()
 	{
 		$this->init();
 	}
 	
+	// Init overload (for inheritance purposes)
 	function init ()
 	{
 	
 	}
 	
+	// Returns a model loaded in the application
 	function __get ($modelName)
 	{
 		return App::Model($modelName);

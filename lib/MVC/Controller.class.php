@@ -1,5 +1,5 @@
 <?php
-// COMPLETE
+
 /**
  * Controller
  *
@@ -12,6 +12,7 @@ use Base\App;
 
 abstract class Controller
 {
+	// Returns a model in the application
 	function __get ($modelName)
 	{
 		return App::Model($modelName);

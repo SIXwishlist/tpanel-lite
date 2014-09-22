@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Registration Controller
+ *
+ * Handles user registration and account activation
+ */
+ 
 namespace App;
 use Base\MVC\Controller;
 use Base\App;
@@ -7,6 +13,7 @@ use Base\Form;
 
 class RegistrationController extends Controller
 {
+	// Initializes the controller and redirects the user if authenticated
 	function init ($request, $view)
 	{
 		if (App::Auth('Admin')->enabled())
@@ -19,6 +26,7 @@ class RegistrationController extends Controller
 		}
 	}
 	
+	// Renders the registration page
 	function register ($request, $view)
 	{
 		$view->title = 'Register';
@@ -40,7 +48,7 @@ class RegistrationController extends Controller
 			}
 			else
 			{
-				$this->User->sendActivationEmail($data['email']);
+				$this->User->sendActivationEmail($request, $data['email']);
 				$view->success = true;
 				$view->render('register_complete');
 			}
@@ -49,6 +57,7 @@ class RegistrationController extends Controller
 		$view->render('register');
 	}
 	
+	// Renders the account activation page
 	function activate ($request, $view)
 	{
 		$view->title = 'Activate';

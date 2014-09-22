@@ -1,12 +1,21 @@
 <?php
 
+/**
+ * User Controller
+ *
+ * Manages user-related functions such as account management
+ */
+
 namespace App;
 use Base\App;
 
 class UserController extends AdminBase
 {
+	// Renders only JSON responses
 	protected $jsonOnly = true;
 	
+	
+	// Lists all users for a page
 	function listUsers ($request, $view)
 	{
 		$page = (int)$request->param('page', 0);
@@ -17,6 +26,7 @@ class UserController extends AdminBase
 		$view->renderAsJSON();
 	}
 	
+	// Removes a user account
 	function removeUser ($request, $view)
 	{
 		$user = $request->param('user', false);
@@ -42,6 +52,7 @@ class UserController extends AdminBase
 		$view->renderAsJSON();
 	}
 	
+	// Creates a new user account
 	function createUser ($request, $view)
 	{
 		$view->success = $this->User->createFromAdmin($request->postArray());
@@ -50,6 +61,7 @@ class UserController extends AdminBase
 		$view->renderAsJSON();
 	}
 	
+	// Modifies a user account
 	function editUser ($request, $view)
 	{
 		$userId = $request->param('user', false);
@@ -60,6 +72,7 @@ class UserController extends AdminBase
 		$view->renderAsJSON();
 	}
 	
+	// Returns the information for a user account
 	function getUser ($request, $view)
 	{
 		$userId = $request->param('user', false);

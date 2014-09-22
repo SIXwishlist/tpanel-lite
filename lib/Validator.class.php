@@ -37,6 +37,7 @@ class Validator
 	// Dataset key label mapping
 	protected $labels;
 	
+	
 	// Constructor
 	private function __construct ($data)
 	{
@@ -228,7 +229,7 @@ class Validator
 	}
 	
 	// [Validation rule]
-	// 
+	// Validates a key based on a regular expression pattern
 	function regex ($key, $pattern, $msg = null)
 	{
 		if ($this->hasInput($key) && !preg_match($pattern, $this->data[$key]))
@@ -239,6 +240,8 @@ class Validator
 		return $this;
 	}
 	
+	// [Validation rule]
+	// Checks a callback by passing it the key's value and invalidates if the callback returns false
 	function callback ($key, $callback, $msg = null)
 	{
 		if ($this->hasInput($key) && !call_user_func($callback, $this->data[$key]))
@@ -249,6 +252,8 @@ class Validator
 		return $this;
 	}
 	
+	// [Validation rule]
+	// Checks a key conforms to an email address
 	function email ($key, $msg = null)
 	{
 		if ($this->hasInput($key) && filter_var($this->data[$key], FILTER_VALIDATE_EMAIL) === false)
@@ -259,6 +264,8 @@ class Validator
 		return $this;
 	}
 	
+	// [Validation rule]
+	// Validates a number as being a currency (floating point with exactly 2 digits after)
 	function currency ($key, $msg = null)
 	{
 		if ($this->hasInput($key) && !preg_match('/^[0-9]+($|\.[0-9]{2}$)/', $this->data[$key]))
@@ -269,11 +276,14 @@ class Validator
 		return $this;
 	}
 	
+	// Determines if a key has data from the input dataset
 	function hasInput ($key)
 	{
 		return isset($this->data[$key]) && strlen($this->data[$key]) > 0;
 	}
 	
+	// [Validation rule]
+	// Validates two keys to ensure they contain the same data
 	function same ($key1, $key2, $msg = null)
 	{
 		if ($this->hasInput($key1) || $this->hasInput($key2))
@@ -287,6 +297,9 @@ class Validator
 		return $this;
 	}
 	
+	// [Validation rule]
+	// Validates a key's length is either at least a certain number of characters
+	// or between a range of numbers ($low - $range).
 	function length ($key, $low, $high = false, $msg = null)
 	{
 		if ($high === false)
@@ -314,6 +327,8 @@ class Validator
 		return $this;
 	}
 	
+	// [Validation rule]
+	// Validates a key matches a specific value
 	function equals ($key, $value, $msg = null)
 	{
 		if ($this->hasInput($key) && strcmp($this->data[$key], $value) != 0)
@@ -324,6 +339,8 @@ class Validator
 		return $this;
 	}
 	
+	// [Validation rule]
+	// Validates some condition that must assert to true
 	function assert ($case, $msg)
 	{
 		if ($case !== true)

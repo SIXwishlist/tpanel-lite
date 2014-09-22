@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * Login Controller
+ *
+ * Handles user login and authentication
+ */
+
 namespace App;
 use Base\MVC\Controller;
 use Base\App;
@@ -7,6 +13,7 @@ use Base\Form;
 
 class LoginController extends Controller
 {
+	// Initializes the login controller and redirects if the user is logged in
 	function init ($request, $view)
 	{
 		if (App::Auth('Admin')->enabled())
@@ -19,6 +26,7 @@ class LoginController extends Controller
 		}
 	}
 	
+	// Redirects the user based on an attempted URL
 	protected function redirect ()
 	{
 		if (App::Session('Redirect')->exists('url'))
@@ -33,6 +41,7 @@ class LoginController extends Controller
 		}
 	}
 	
+	// Renders the client login page
 	function client ($request, $view)
 	{
 		$view->title = 'Login';
@@ -64,6 +73,7 @@ class LoginController extends Controller
 		$view->render('login');
 	}
 	
+	// Renders the admin login page
 	function admin ($request, $view)
 	{
 		$view->title = 'Login';
