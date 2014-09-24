@@ -127,6 +127,10 @@ class APIController extends Controller
 		$newFile = $request->post('dest', null);
 		
 		$view->success = $this->FileSystem->renameFile($file, $newFile);
+		if ($view->success === false)
+		{
+			$view->message = 'New filename is not allowed';
+		}
 		$view->renderAsJSON();
 	}
 	
@@ -137,6 +141,10 @@ class APIController extends Controller
 		$destination = $request->post('dest', null);
 		
 		$view->success = $this->FileSystem->moveFile($source, $destination);
+		if ($view->success === false)
+		{
+			$view->message = 'Destination filename is not allowed';
+		}
 		$view->renderAsJSON();
 	}
 	
@@ -156,6 +164,10 @@ class APIController extends Controller
 		else
 		{
 			$view->success = $this->FileSystem->copyFile($source, $destination);		
+			if ($view->success === false)
+			{
+				$view->message = 'Destination filename is not allowed';
+			}
 		}
 		$view->renderAsJSON();
 	}
@@ -179,6 +191,10 @@ class APIController extends Controller
 		$file = $request->post('file');
 		
 		$view->success = $this->FileSystem->touch($file);
+		if ($view->success === false)
+		{
+			$view->message = 'Filename is not allowed';
+		}
 		$view->renderAsJSON();
 	}
 	
@@ -188,6 +204,10 @@ class APIController extends Controller
 		$dir = $request->post('dir');
 		
 		$view->success = $this->FileSystem->mkdir($dir);
+		if ($view->success === false)
+		{
+			$view->message = 'Directory name is not allowed';
+		}
 		$view->renderAsJSON();
 	}
 }

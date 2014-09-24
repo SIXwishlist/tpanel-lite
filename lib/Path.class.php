@@ -32,7 +32,13 @@ class Path
 	// Initializes the base URI
 	public static function initURI ()
 	{
-		$uri = str_replace('index.php', '', $_SERVER['SCRIPT_NAME']);
+		$uri = $_SERVER['SCRIPT_NAME'];
+		
+		// If mod_rewrite is not enabled, pass everything through index.php
+		if (in_array('mod_rewrite', apache_get_modules()))
+		{
+			$uri = str_replace('index.php', '', $uri);
+		}
 		
 		if (substr($uri, -1) !== '/')
 		{

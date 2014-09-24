@@ -133,7 +133,7 @@ jQuery(document).ready(function () {
 		
 		jQuery('.files').append(htmlEditorDiv);
 		
-		WebEditor.editor = new nicEditor({iconsPath: '{{ @theme('icons/nicEditorIcons.gif') }}', fullPanel: true}).panelInstance('html-editor');
+		WebEditor.editor = new nicEditor({maxHeight:350, iconsPath: '{{ @theme('icons/nicEditorIcons.gif') }}', fullPanel: true}).panelInstance('html-editor');
 	};
 	
 	// Initialize

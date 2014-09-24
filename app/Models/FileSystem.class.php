@@ -82,6 +82,10 @@ class FileSystem extends Model
 	function touch ($file)
 	{
 		$file = $this->filterDir($file);
+		if ($this->isBannedFile($file))
+		{
+			return false;
+		}
 		$f = new File($this->getUserDir().$file);
 		return $f->create(0644);
 	}
@@ -102,11 +106,22 @@ class FileSystem extends Model
 		}
 	}
 	
+	// Checks if a file is banned from the user's web space
+	protected function isBannedFile ($file)
+	{
+		$fp = new File($file);
+		return strcasecmp($fp->basename(), '.htaccess') == 0;
+	}
+	
 	// Copies a file or directory
 	function copyFile ($src, $dest)
 	{
 		$src = $this->getUserDir().$this->filterDir($src);
 		$dest = $this->getUserDir().$this->filterDir($dest);
+		if ($this->isBannedFile($dest))
+		{
+			return false;
+		}
 		if (File::isFile($src))
 		{
 			$f = new File($src);
@@ -155,7 +170,10 @@ class FileSystem extends Model
 	{
 		$src = $this->getUserDir().$this->filterDir($src);
 		$dest = $this->getUserDir().$this->filterDir($dest);
-		
+		if ($this->isBannedFile($dest))
+		{
+			return false;
+		}
 		if (File::isFile($src))
 		{
 			$f = new File($src);
@@ -173,7 +191,10 @@ class FileSystem extends Model
 	{
 		$src = $this->getUserDir().$this->filterDir($src);
 		$dest = $this->getUserDir().$this->filterDir($dest);
-		
+		if ($this->isBannedFile($dest))
+		{
+			return false;
+		}
 		if (File::isFile($src))
 		{
 			$f = new File($src);
@@ -190,7 +211,10 @@ class FileSystem extends Model
 	function saveFile ($file, $contents)
 	{
 		$file = $this->getUserDir().$this->filterDir($file);
-		
+		if ($this->isBannedFile($file))
+		{
+			return null;
+		}
 		$f = new File($file);
 		return $f->contents($contents);
 	}
@@ -210,6 +234,11 @@ class FileSystem extends Model
 		$dir = $this->getUserDir().$this->filterDir($dir);
 		$info = $this->getUploadMeta($request);
 		$f = new File($dir.'/'.$info['file']);
+		
+		if ($this->isBannedFile($f->getFullPath()))
+		{
+			return false;
+		}
 		
 		return $f->upload($request->file('upload'));
 	}

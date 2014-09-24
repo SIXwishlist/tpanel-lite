@@ -12,6 +12,10 @@
 		</div>
 	</div>
 { end }
+
+<div class="stats">
+	Last backup: {{@date}}
+</div>
 <div class="padding-10">
 <table class="backup-files">
 <tr><th>File/Directory</th><th>Size</th></tr>
@@ -26,6 +30,3 @@
 	<input type="submit" name="funcbtn2" value="Restore" />
 </div>
 </form>
-<div class="stats">
-	Last update: {{@date}}
-</div>

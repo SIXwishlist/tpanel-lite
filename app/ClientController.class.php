@@ -165,6 +165,7 @@ class ClientController extends ClientBase
 				{
 					App::Session('Client')->set('deleteConfirm', 1);
 					$confirmLevel = 1;
+					$view->warning = true;
 				}
 				elseif ($confirmLevel === 1)
 				{

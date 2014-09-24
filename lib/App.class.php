@@ -14,12 +14,19 @@ use Base\IO\File;
 
 class App
 {
+	// Authentication sessions
 	protected static $auth = array();
+	// Application from @app/config.php
 	protected static $app = null;
+	// Router
 	protected static $router = null;
+	// Application Databases
 	protected static $dbs = array();
+	// Application Models
 	protected static $models = array();
 	
+	
+	// Routes a Request object and returns the callable to that URI
 	public static function route (&$request)
 	{
 		$uri = $request->URL();
@@ -35,6 +42,7 @@ class App
 		}
 	}
 	
+	// Displays a generic "404 Not Found" page for a failed request
 	public static function displayNotFound ($request)
 	{
 		print "<h1>Not Found</h1>";
@@ -42,6 +50,7 @@ class App
 		self::complete();
 	}
 	
+	// Executes the application based on a Request object
 	public static function execute ($request)
 	{
 		try
@@ -62,6 +71,7 @@ class App
 		}
 	}
 	
+	// Displays an exception and optionally halts the application
 	public static function displayException ($e, $continue = true)
 	{
 		print "<fieldset><legend>".$e->getTitle()."</legend><p>".$e->getMessage()."</p></fieldset>";
@@ -71,11 +81,13 @@ class App
 		}
 	}
 	
+	// Forcibly terminates the application early
 	public static function complete ()
 	{
 		die;
 	}
 	
+	// Runs a callable on a Request
 	protected static function run ($request, $callable)
 	{
 		$view = new View();
@@ -86,6 +98,7 @@ class App
 		call_user_func([$c, $callable[1]], $request, $view);
 	}
 	
+	// Invokes an application method
 	protected static function invoke ($method)
 	{
 		if (method_exists(self::$app, $method))
@@ -94,6 +107,7 @@ class App
 		}
 	}
 	
+	// Initializes the application for execution
 	public static function init ()
 	{
 		include('app/config.php');
@@ -117,6 +131,7 @@ class App
 		self::invoke('beforeRun');
 	}
 	
+	// Returns or creates an authentication session
 	public static function Auth ($name)
 	{
 		// Assign Singletons
@@ -127,6 +142,7 @@ class App
 		return self::$auth[$name];
 	}
 	
+	// Returns a Database based on its configuration name
 	public static function Database ($name)
 	{
 		if (!isset(self::$dbs[$name]))
@@ -136,6 +152,7 @@ class App
 		return self::$dbs[$name];
 	}
 	
+	// Returns an application model
 	public static function Model ($name)
 	{
 		if (!isset(self::$models[$name]))
@@ -146,11 +163,13 @@ class App
 		return self::$models[$name];
 	}
 	
+	// Flashes a message in the View
 	public static function flash ($message)
 	{
 		View::flashMessage($message);
 	}
 	
+	// Redirects to a URL or internal application callable access path
 	public static function redirect ($url, $params = null)
 	{
 		if (substr($url, 0, 1) === '@')
@@ -161,11 +180,13 @@ class App
 		self::complete();
 	}
 	
+	// Returns a new Session for a group
 	public static function Session ($name)
 	{
 		return new Session($name);
 	}
 	
+	// Retrieves a File object for a file in @app/data
 	public static function Data ($file)
 	{
 		return new File(Path::local('data/'.$file));
