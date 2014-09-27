@@ -28,7 +28,7 @@ class Request
 		$this->uri = $uri;
 		$this->get = $_GET;
 		$this->post = $_POST;
-		$this->headers = getallheaders();
+		$this->headers = function_exists('getallheaders') ? getallheaders() : [];
 		$this->params = array();
 	}
 	

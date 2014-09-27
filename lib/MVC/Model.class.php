@@ -12,9 +12,12 @@ use Base\App;
 
 abstract class Model
 {
+	protected $errors;
+	
 	// Constructor
 	function __construct ()
 	{
+		$this->errors = [];
 		$this->init();
 	}
 	
@@ -28,5 +31,29 @@ abstract class Model
 	function __get ($modelName)
 	{
 		return App::Model($modelName);
+	}
+	
+	// Reports an error to the error list
+	function report ($text)
+	{
+		array_push($this->errors, $text);
+	}
+	
+	// Resets the error list
+	function clearErrors ()
+	{
+		$this->errors = [];
+	}
+	
+	// Returns an error from the error list
+	function error ($index = 0)
+	{
+		return $this->errors[$index];
+	}
+	
+	// Returns all errors reported by the model
+	function errors ()
+	{
+		return $this->errors;
 	}
 }

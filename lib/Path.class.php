@@ -35,7 +35,7 @@ class Path
 		$uri = $_SERVER['SCRIPT_NAME'];
 		
 		// If mod_rewrite is not enabled, pass everything through index.php
-		if (in_array('mod_rewrite', apache_get_modules()))
+		if (!function_exists('apache_get_modules') || in_array('mod_rewrite', apache_get_modules()))
 		{
 			$uri = str_replace('index.php', '', $uri);
 		}

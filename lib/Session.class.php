@@ -28,6 +28,13 @@ class Session
 		$this->group = $group;
 	}
 	
+	// Sets timeout for the session duration of inactivity
+	public static function setTimeout ($sec)
+	{
+		ini_set('session.gc_maxlifetime', $sec);
+		session_set_cookie_params($sec);
+	}
+	
 	// Returns a value from the session manager ($default is returned if the key isn't found)
 	function get ($key, $default = null)
 	{
