@@ -21,6 +21,8 @@ class Db
 	protected $rowCount = 0;
 	// Database table prefix
 	protected $tablePrefix = null;
+	// Connection flag
+	protected $connected = false;
 	
 	
 	// Returns a database instance from a configuration file in 
@@ -48,7 +50,21 @@ class Db
 	function __construct ($host, $user, $pass, $db, $type = 'mysql')
 	{
 		$connString = sprintf('%s:host=%s;dbname=%s', $type, $host, $db);
-		$this->pdo = new PDO($connString, $user, $pass);
+		try
+		{
+			$this->pdo = new PDO($connString, $user, $pass);
+			$this->connected = true;
+		}
+		catch (\PDOException $e)
+		{
+			$this->connected = false;
+		}
+	}
+	
+	// Returns true if connected
+	function connected ()
+	{
+		return $this->connected;
 	}
 	
 	// Sets the table prefix

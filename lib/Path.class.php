@@ -10,6 +10,7 @@
 
 namespace Base;
 use Base\MVC\View;
+use Base\IO\File;
 
 class Path
 {
@@ -37,7 +38,7 @@ class Path
 		// If mod_rewrite is not enabled, pass everything through index.php
 		if (!function_exists('apache_get_modules') || in_array('mod_rewrite', apache_get_modules()))
 		{
-			$uri = str_replace('index.php', '', $uri);
+			$uri = str_replace((new File($_SERVER['SCRIPT_FILENAME']))->basename(), '', $uri);
 		}
 		
 		if (substr($uri, -1) !== '/')
@@ -59,8 +60,8 @@ class Path
 		{
 			$url = $request->isHTTPS() ? 'https' : 'http';
 			$url .= '://';
-			$url .= $request->getHostName().'/';
-			return $url.self::$url.$path;
+			$url .= $request->getHostName();
+			return $url.self::$uri.$path;
 		}
 		else
 		{

@@ -1,9 +1,15 @@
 <?php
 
-// TODO: Includes
+// Installer
+require('lib/autoload.php');
+require('lib/bootstrap.php');
 
 use Base\Setup;
 use Base\Template;
+use Base\Arr;
+use App\Models\Config;
+use App\Models\User;
+use Base\Path;
 
 $setup = new Setup();
 
@@ -21,8 +27,16 @@ $setup->afterSubmit(function($setup) {
 });
 
 $setup->validate(function($setup, $data) {
-	// TODO: Validate datasets
-	$setup->validate->
+	// Validate datasets
+	$fields = [
+				'web_host_name','free_space','admin_email','user_dir','user_url','db_server',
+				'db_username','db_password','db_database','db_prefix','admin_user','admin_pass',
+				'admin_fullname','admin_email'
+			];
+	foreach ($fields as $field)
+	{
+		$setup->validate->required($field);
+	}
 });
 
 $setup->beforeSubmit(function($setup) {
@@ -70,10 +84,6 @@ EOD;
 });
 
 $setup->submit(function($setup) {
-	// TODO: Set file contents
-	$setup->fileSet('tpanel-conf', '');
-	$setup->fileSet('db-conf', '');
-	
 	// Create database
 	$setup->dbCreate('main', 'main-sql');
 	
@@ -87,19 +97,41 @@ $setup->submit(function($setup) {
 	$setup->fileCreate('.htaccess', 'main-htaccess');
 	$setup->fileCreate('data/.htaccess', 'data-htaccess');
 	$setup->fileCreate('users/.htaccess', 'users-htaccess');
-	$setup->fileCreate('data/tpanel.conf', 'tpanel-conf');
-	$setup->fileCreate('data/databases/main.conf', 'db-conf');
 	$setup->fileCreate('data/emails/activate.tpl', 'email');
+	
+	// Write configuration files
+	$conf = new Config();
+	$confData = [
+					'web_host_name' => $setup->postValue('web_host_name'),
+					'free_space' => $setup->postValue('free_space'), 
+					'admin_email' => $setup->postValue('admin_email'),
+					'theme' => 'default',
+					'user_dir' => $setup->postValue('user_dir'),
+					'user_url' => $setup->postValue('user_url'),
+					'server' => $setup->postValue('db_server'), 
+					'username' => $setup->postValue('db_username'), 
+					'password' => $setup->postValue('db_password'),
+					'database' => $setup->postValue('db_database'), 
+					'prefix' => $setup->postValue('db_prefix')
+				];
+	if (!$conf->store($confData))
+	{
+		$setup->error('Cannot create or write to configuration files');
+	}
 	
 	// Create user account
 	$user = new User();
-	// username, password, email, full_name
-	$userData = Arr::filter($setup->post(), ['username', 'password', 'email', 'full_name']);
-	$userData['webspace'] = $setup->postValue('free_space');
-	$userData['user_level'] = 2;
+	$userData = [
+					'username' => $setup->postValue('admin_user'), 
+					'password' => $setup->postValue('admin_pass'), 
+					'email' => $setup->postValue('admin_email'), 
+					'full_name' => $setup->postValue('admin_fullname'), 
+					'webspace' => $setup->postValue('free_space'),
+					'user_level' => 2
+				];
 	if ($user->createFromAdmin($userData))
 	{
-		$setup->success('Admin account created successfully');
+		$setup->success(sprintf('Admin account created successfully - please <a href="%s">login here</a> to access the control panel', Path::web('admin/login')));
 	}
 	else
 	{
@@ -115,7 +147,6 @@ $setup->init(function($setup) {
 	$setup->beginGroup('General Setup');
 		$setup->textField('Web Host Name', 'web_host_name');
 		$setup->textField('Default Web Space in MB (0 = unlimited)', 'free_space', 50);
-		$setup->textField('Admin Email Address', 'admin_email');
 	$setup->endGroup();
 	
 	$setup->beginGroup('Path Settings');
@@ -134,8 +165,8 @@ $setup->init(function($setup) {
 	$setup->beginGroup('Admin Account');
 		$setup->textField('Username', 'admin_user', 'admin');
 		$setup->passwordField('Password', 'admin_pass');
-		$setup->textField('Database', 'db_database');
-		$setup->textField('Prefix', 'db_prefix');
+		$setup->textField('Full Name', 'admin_fullname');
+		$setup->textField('Email', 'admin_email');
 	$setup->endGroup();
 });
 

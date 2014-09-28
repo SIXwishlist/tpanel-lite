@@ -4,4 +4,4 @@
 require('lib/autoload.php');
 require('lib/bootstrap.php');
 
-App::start();
+\Base\App::start();

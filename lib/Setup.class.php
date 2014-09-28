@@ -9,6 +9,10 @@
 
 namespace Base;
 
+use Base\UI\HTML;
+use Base\IO\File;
+use Base\IO\Dir;
+
 class Setup
 {
 	// Current HTTP Request object
@@ -17,6 +21,16 @@ class Setup
 	public $validate = null;
 	// Content storage
 	protected $content = [];
+	// Success message
+	protected $success = null;
+	// Database settings
+	protected $dbConfig = [];
+	// Database connections
+	protected $db = [];
+	// Output content
+	protected $output = '';
+	// Form handler
+	public $form = null;
 	
 	// Event handler storage
 	protected $before = null;
@@ -32,6 +46,7 @@ class Setup
 	{
 		// Prepare Request
 		$this->request = new Request('/');
+		$this->form = new Form($this->request);
 	}
 	
 	/* Event handlers */
@@ -75,39 +90,68 @@ class Setup
 	
 	/* Main methods */
 	
+	// Connects to a database
 	function dbConnect ($id)
 	{
-	
+		$conf = $this->dbConfig[$id];
+		$this->db[$id] = new Db($conf['server'], $conf['user'], $conf['pass'], $conf['db'], $conf['type']);
+		return $this->db[$id]->connected();
 	}
 	
+	// Sets the DB connection settings for a database ID
 	function dbSettings ($id, $settings)
 	{
-	
+		if (!isset($settings['type']))
+		{
+			$settings['type'] = 'mysql';
+		}
+		$this->dbConfig[$id] = $settings;
 	}
 	
+	// Creates a database from a content block of SQL
 	function dbCreate ($id, $contentId)
 	{
-	
+		return $this->db[$id]->execute($this->content[$contentId]);
 	}
 	
+	// Creates a new UI control group
 	function beginGroup ($text)
 	{
-	
+		$this->output .= HTML::open('fieldset').HTML::tag('legend', null, $text);
 	}
 	
+	// Closes the UI control group
 	function endGroup ()
 	{
-	
+		$this->output .= HTML::close('fieldset');
 	}
 	
+	// Adds a new text field to the output content
 	function textField ($label, $id, $default = null)
 	{
-	
+		$this->row($label, $this->form->text($id, ['value' => $default]));
 	}
 	
+	// Adds a new password field to the output content
 	function passwordField ($label, $id, $default = null)
 	{
+		$this->row($label, $this->form->password($id, ['value' => $default]));
+	}
 	
+	// Adds a new label and field to the output content
+	protected function row ($label, $field)
+	{
+		$this->output .= HTML::open('div', ['class' => 'row']);
+		
+		// Label
+		$this->output .= HTML::tag('label', null, $label);
+		
+		// Field
+		$this->output .= HTML::open('div', ['class' => 'field']);
+		$this->output .= $field;
+		$this->output .= HTML::close('div');
+		
+		$this->output .= HTML::close('div');
 	}
 	
 	// Returns the Request object generated from the built-in controller
@@ -116,9 +160,10 @@ class Setup
 		return $this->request;
 	}
 	
+	// Sets a generic success message displayed when the setup is finished
 	function success ($msg)
 	{
-	
+		$this->success = $msg;
 	}
 	
 	// Causes the Setup to cease execution and display an error
@@ -187,18 +232,28 @@ class Setup
 		return $f->delete();
 	}
 	
+	// Executes the Setup controller
 	function run ()
 	{
+		$page = Template::fromFile('app/protected/install.tpl');
 		try
 		{
 			$this->executeSetup();
 		}
 		catch (Exception $e)
 		{
-		
+			$page->error = $e->getMessage();
 		}
 		
+		if ($this->success !== null)
+		{
+			$page->success = $this->success;
+		}
+		
+		$page->content = $this->output;
+		
 		// Render template
+		$page->render();
 	}
 	
 	// Invokes a callback if it's not null
@@ -224,7 +279,12 @@ class Setup
 			$this->invoke($this->beforeSubmit, [$this]);
 			
 			// Validate & submit
-			$this->invoke($this->validate, [$this, $this->post()]);
+			$this->validate = Validator::evaluate($this->post());
+			$this->invoke($this->validateEvent, [$this, $this->post()]);
+			if (!$this->validate->success())
+			{
+				throw new Exception('Validation Error', $this->validate->error(0));
+			}	
 			$this->invoke($this->submit, [$this]);
 			
 			$this->invoke($this->afterSubmit, [$this]);
