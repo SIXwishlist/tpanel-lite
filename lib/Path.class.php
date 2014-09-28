@@ -59,7 +59,7 @@ class Path
 		{
 			$url = $request->isHTTPS() ? 'https' : 'http';
 			$url .= '://';
-			$url .= $request->getDomainName().'/';
+			$url .= $request->getHostName().'/';
 			return $url.self::$url.$path;
 		}
 		else

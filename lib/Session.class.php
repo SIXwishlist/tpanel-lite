@@ -15,6 +15,8 @@ class Session
 	protected $group;
 	// Session start flag
 	protected static $started = false;
+	// Session duration
+	protected static $timeout = 0;
 	
 	
 	// Constructor (requires a group)
@@ -23,6 +25,11 @@ class Session
 		if (!isset($_SESSION) && !self::$started)
 		{
 			self::$started = true;
+			if (self::$timeout > 0)
+			{
+				ini_set('session.gc_maxlifetime', self::$timeout);
+				session_set_cookie_params(self::$timeout);
+			}
 			session_start();
 		}
 		$this->group = $group;
@@ -31,8 +38,7 @@ class Session
 	// Sets timeout for the session duration of inactivity
 	public static function setTimeout ($sec)
 	{
-		ini_set('session.gc_maxlifetime', $sec);
-		session_set_cookie_params($sec);
+		self::$timeout = $sec;
 	}
 	
 	// Returns a value from the session manager ($default is returned if the key isn't found)

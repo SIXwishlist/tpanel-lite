@@ -191,7 +191,7 @@ class User extends DbModel
 		{
 			$this->userId = $id;
 			$d = new Dir($this->Config->getUserDir().'/'.$data['username']);
-			if (!$d->create(0777))
+			if (!$d->create(0644))
 			{
 				return false;
 			}
@@ -213,7 +213,7 @@ class User extends DbModel
 		if ($id !== false)
 		{
 			$d = new Dir($this->Config->getUserDir().'/'.$data['username']);
-			if (!$d->create(0777))
+			if (!$d->create(0644))
 			{
 				return false;
 			}

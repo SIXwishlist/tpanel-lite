@@ -28,7 +28,7 @@ class Request
 		$this->uri = $uri;
 		$this->get = $_GET;
 		$this->post = $_POST;
-		$this->headers = function_exists('getallheaders') ? getallheaders() : [];
+		$this->headers = function_exists('apache_request_headers') ? apache_request_headers() : [];
 		$this->params = array();
 	}
 	
@@ -39,7 +39,7 @@ class Request
 	}
 	
 	// Returns the host name (domain name)
-	function getDomainName ()
+	function getHostName ()
 	{
 		return $_SERVER['HTTP_HOST'];
 	}
