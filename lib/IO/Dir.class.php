@@ -235,6 +235,12 @@ class Dir
 		return $size;
 	}
 	
+	// Returns true if a directory is writable
+	function isWritable ()
+	{
+		return is_writable($this->dir);
+	}
+	
 	// Returns the size of a directory in bytes
 	public static function getSize ($path, $recursive = false)
 	{

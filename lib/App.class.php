@@ -191,4 +191,11 @@ class App
 	{
 		return new File(Path::local('data/'.$file));
 	}
+	
+	// Starts the application
+	public static function start ()
+	{
+		// Route the URI to correct controller and execute it
+		self::execute(new Request(isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/'));
+	}
 }

@@ -22,6 +22,3 @@ Path::initURI();
 
 // Init the App to read configuration
 App::init();
-
-// Route the URI to correct controller and execute it
-App::execute(new Request(isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '/'));
