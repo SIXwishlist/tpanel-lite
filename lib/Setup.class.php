@@ -210,7 +210,7 @@ class Setup
 	function dirCreate ($dir, $perms)
 	{
 		$d = new Dir($dir);
-		if (!$d->create($perms))
+		if (!$d->exists() && !$d->create($perms))
 		{
 			throw new Exception('Directory Create Error', sprintf('Could not create directory "%s"', $dir));
 		}
@@ -228,8 +228,11 @@ class Setup
 	// Removes calling PHP file
 	function dissolve ()
 	{
-		$f = new File(__FILE__);
-		return $f->delete();
+		$f = new File($this->request->scriptFile());
+		if (!$f->delete())
+		{
+			throw new Exception('Dissolve Error', sprintf('Setup completed but could not remove the installation file - please remove "%s" manually', $f->basename()));
+		}
 	}
 	
 	// Executes the Setup controller

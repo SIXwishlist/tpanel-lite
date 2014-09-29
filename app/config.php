@@ -19,9 +19,16 @@ class Application extends Package
 	// Constructor
 	function __construct ()
 	{
-		$conf = parse_ini_file(App::Data('tpanel.conf')->getFullPath());
-		
-		$this->theme = $conf['theme'];
+		$confFile = App::Data('tpanel.conf');
+		if ($confFile->exists())
+		{
+			$conf = parse_ini_file($confFile->getFullPath());
+		}
+		else
+		{
+			$conf = [];
+		}
+		$this->theme = isset($conf['theme']) ? $conf['theme'] : null;
 		View::setAdapter('Template');
 		Session::setTimeout(8*60*60);
 	}

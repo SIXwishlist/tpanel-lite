@@ -86,7 +86,6 @@ class Db
 		{
 			$sql = preg_replace('/\[(.+?)\]/', $this->tablePrefix.'$1', $sql);
 		}
-		
 		$stmt = $this->pdo->prepare($sql);
 		switch ($fetchMode)
 		{

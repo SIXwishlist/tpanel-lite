@@ -15,7 +15,7 @@
 		{end}
 		{display(success)}
 		<div class="alert success">
-		  {{@success}}
+		  {{success}}
 		</div>
 		{end}
 		<p>To install tPanel Lite, complete the setup form below and press &quot;Install&quot; to complete the installation.</p>

@@ -49,14 +49,14 @@ $setup->beforeSubmit(function($setup) {
 		];
 		
 	$dbSql = <<<EOD
-CREATE TABLE IF NOT EXISTS `{{prefix}}_backups` (
+CREATE TABLE IF NOT EXISTS `{{prefix}}backups` (
   `user_id` int(11) NOT NULL,
   `backup_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `backup_file_hash` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-CREATE TABLE IF NOT EXISTS `{{prefix}}_users` (
+CREATE TABLE IF NOT EXISTS `{{prefix}}users` (
   `user_id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(48) COLLATE utf8_unicode_ci NOT NULL,
   `password` varchar(32) COLLATE utf8_unicode_ci NOT NULL COMMENT 'SHA1 hashing',
@@ -84,15 +84,12 @@ EOD;
 });
 
 $setup->submit(function($setup) {
-	// Create database
-	$setup->dbCreate('main', 'main-sql');
-	
 	// Create directories
-	$setup->dirCreate('users', 0644);
-	$setup->dirCreate('data', 0644);
-	$setup->dirCreate('data/backups', 0644);
-	$setup->dirCreate('data/databases', 0644);
-	$setup->dirCreate('data/emails', 0644);
+	$setup->dirCreate('users', 0544);
+	$setup->dirCreate('data', 0544);
+	$setup->dirCreate('data/backups', 0544);
+	$setup->dirCreate('data/databases', 0544);
+	$setup->dirCreate('data/emails', 0544);
 	
 	$setup->fileCreate('.htaccess', 'main-htaccess');
 	$setup->fileCreate('data/.htaccess', 'data-htaccess');
@@ -118,6 +115,9 @@ $setup->submit(function($setup) {
 	{
 		$setup->error('Cannot create or write to configuration files');
 	}
+	
+	// Create database
+	$setup->dbCreate('main', 'main-sql');
 	
 	// Create user account
 	$user = new User();

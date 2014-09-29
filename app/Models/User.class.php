@@ -191,7 +191,7 @@ class User extends DbModel
 		{
 			$this->userId = $id;
 			$d = new Dir($this->Config->getUserDir().'/'.$data['username']);
-			if (!$d->create(0644))
+			if (!$d->create(0744))
 			{
 				return false;
 			}
@@ -213,12 +213,16 @@ class User extends DbModel
 		if ($id !== false)
 		{
 			$d = new Dir($this->Config->getUserDir().'/'.$data['username']);
-			if (!$d->create(0644))
+			if (!$d->create(0744))
 			{
 				return false;
 			}
+			return true;
 		}
-		return $id;
+		else
+		{
+			return false;
+		}
 	}
 	
 	// Sends a new user activation email

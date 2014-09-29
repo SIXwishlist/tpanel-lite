@@ -38,6 +38,12 @@ class Request
 		return !empty($_SERVER['HTTPS']);
 	}
 	
+	// Returns the calling script's filename
+	function scriptFile ()
+	{
+		return $_SERVER['SCRIPT_FILENAME'];
+	}
+	
 	// Returns the host name (domain name)
 	function getHostName ()
 	{
