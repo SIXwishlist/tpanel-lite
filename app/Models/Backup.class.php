@@ -7,17 +7,16 @@
  */
 
 namespace App\Models;
-use Base\MVC\Model\DbModel;
+use DynamicTable\Model;
 use Base\App;
 use Base\IO\File;
 use Base\IO\Zip;
 
-class Backup extends DbModel
+class Backup extends Model
 {
 	// Database connection info
 	protected $db = 'main';
 	protected $table = '[backups]';
-	protected $primaryKey = 'user_id';
 	
 	// FileSystem model
 	protected $fs;
@@ -40,17 +39,17 @@ class Backup extends DbModel
 	// Retrieves the user's backup file (false if none exists)
 	function getBackupFile ()
 	{
-		$r = $this->filter('user_id', $this->userId);
+		$r = $this->query()->where('user_id', $this->userId)->limit(1);
 		
 		// If the hash exists, return the filename, otherwise create it
-		if ($r->min(1))
+		if ($r->count() > 0)
 		{
-			return sprintf('backups/%s', $r->data('backup_file_hash'));
+			return sprintf('backups/%s', $r->result('backup_file_hash'));
 		}
 		else
 		{
 			$hash = md5(date('m/d/Y g:i:s A'));
-			if ($this->add(['user_id' => $this->userId, 'backup_time' => ['NOW()'], 'backup_file_hash' => $hash]))
+			if ($this->insert(['user_id' => $this->userId, 'backup_time' => ['NOW()'], 'backup_file_hash' => $hash]))
 			{
 				return sprintf('backups/%s', $hash);
 			}
@@ -64,7 +63,7 @@ class Backup extends DbModel
 	// Destroys a user's backup file
 	function destroy ()
 	{
-		$this->filter('user_id', $this->userId)->clear();
+		$this->query()->where('user_id', $this->userId)->delete();
 		
 		$backup = App::Data($this->getBackupFile())->getFullPath();
 		if (File::isFile($backup))
@@ -86,7 +85,7 @@ class Backup extends DbModel
 		// true = recursive
 		$zip->addDirectory($this->User->getPath(), true);
 		$zipResult = $zip->close();
-		$dbResult = $this->set($this->userId, ['backup_time' => ['NOW()']]);
+		$dbResult = $this->find($this->userId)->update(['backup_time' => ['NOW()']]);
 		return $zipResult && $dbResult;
 	}
 	
@@ -121,6 +120,6 @@ class Backup extends DbModel
 	// Returns the date of the last backup
 	function getDate ()
 	{
-		return $this->filter('user_id', $this->userId)->data('backup_time');
+		return $this->query()->where('user_id', $this->userId)->result('backup_time');
 	}
 }

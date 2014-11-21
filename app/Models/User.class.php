@@ -7,7 +7,7 @@
  */
 
 namespace App\Models;
-use Base\MVC\Model\DbModel;
+use DynamicTable\Model;
 use Base\Mail;
 use Base\Template;
 use Base\Arr;
@@ -15,12 +15,11 @@ use Base\Validator;
 use Base\App;
 use Base\IO\Dir;
 
-class User extends DbModel
+class User extends Model
 {
 	// Database connection info
 	protected $db = 'main';
 	protected $table = '[users]';
-	protected $primaryKey = 'user_id';
 	
 	// Current user ID
 	protected $userId;
@@ -45,7 +44,7 @@ class User extends DbModel
 	// Returns the username from an ID
 	function usernameFromId ($uid)
 	{
-		return $this->filter('user_id', $uid)->data('username');
+		return $this->query()->where('user_id', $uid)->limit(1)->result('username');
 	}
 	
 	// Returns the user's path
@@ -59,7 +58,7 @@ class User extends DbModel
 	function availableSpace ()
 	{
 		// Convert to MB
-		return $this->get($this->userId)->webspace * 1024 * 1024;
+		return $this->find($this->userId)->first('webspace') * 1024 * 1024;
 	}
 	
 	// Validates an admin-side user account update
@@ -73,31 +72,32 @@ class User extends DbModel
 	function update ($data)
 	{
 		$data = Arr::filter($data, ['password', 'email', 'full_name']);
-		return $this->set($this->userId, $data);
+		$this->find($this->userId);
+		return parent::update($data);
 	}
 	
 	// Removes a user's account
 	function remove ()
 	{
-		return $this->delete($this->userId);
+		return $this->find($this->userId)->delete();
 	}
 	
 	// Returns the configuration for a user's account
 	function getConfig ()
 	{
-		$data = $this->get($this->userId)->toArray();
+		$data = $this->find($this->userId)->first();
 		return Arr::filter($data, ['username', 'email', 'full_name', 'webspace']);
 	}
 	
 	// Returns true if a username and password match for a client
 	function isClient ($user, $pass)
 	{
-		$data = $this->filter('username', $user)->filter('password', ['MD5(?)' => [$pass]]);
+		$data = $this->query()->where('username', $user)->andWhere('password', ['MD5(?)' => [$pass]])->limit(1);
 		
-		$result = ($data->min(1) && $data->data('user_level') >= 1);
+		$result = ($data->count() > 0 && (int)$data->result('user_level') >= 1);
 		if ($result)
 		{
-			$userId = $data->data('user_id');
+			$userId = $data->result('user_id');
 		}
 		else
 		{
@@ -109,12 +109,12 @@ class User extends DbModel
 	// Returns true if a username and password match for an admin
 	function isAdmin ($user, $pass)
 	{
-		$data = $this->filter('username', $user)->filter('password', ['MD5(?)' => [$pass]]);
+		$data = $this->query()->where('username', $user)->andWhere('password', ['MD5(?)' => [$pass]])->limit(1);
 		
-		$result = ($data->min(1) && (int)$data->data('user_level') === 2);
+		$result = ($data->count() > 0 && (int)$data->result('user_level') === 2);
 		if ($result)
 		{
-			$userId = $data->data('user_id');
+			$userId = $data->result('user_id');
 		}
 		else
 		{
@@ -157,21 +157,21 @@ class User extends DbModel
 	// Returns true if a username exists
 	protected function userExists ($username)
 	{
-		return $this->filter('username', $username)->min(1);
+		return $this->query()->where('username', $username)->limit(1)->count() > 0;
 	}
 	
 	// Returns true if an email is already in use by another account
 	protected function emailInUse ($id, $email)
 	{
 		// Check if the new email is in use by another account
-		$uid = $this->filter('email', $email)->data('user_id', false);
-		return $uid !== false && $uid != $id;
+		$uid = $this->query()->where('email', $email)->limit(1)->result('user_id');
+		return $uid !== null && (int)$uid != (int)$id;
 	}
 	
 	// Returns true if an email account exists for an account
 	protected function emailExists ($email)
 	{
-		return $this->filter('email', $email)->min(1);
+		return $this->query()->where('email', $email)->limit(1)->count() > 0;
 	}
 	
 	// Creates a new user account
@@ -186,7 +186,7 @@ class User extends DbModel
 		$user['webspace'] = $this->Config->getNewUserSpace();
 		$user['user_level'] = 0;
 		$user['activation_code'] = md5(date('Y-m-d g:i:s A'));
-		$id = $this->add($user);
+		$id = $this->insert($user);
 		if ($id !== false)
 		{
 			$this->userId = $id;
@@ -209,7 +209,7 @@ class User extends DbModel
 		$user['full_name'] = $data['full_name'];
 		$user['webspace'] = $data['webspace'];
 		$user['user_level'] = $data['user_level'];
-		$id = $this->add($user);
+		$id = $this->insert($user);
 		if ($id !== false)
 		{
 			$d = new Dir($this->Config->getUserDir().'/'.$data['username']);
@@ -228,13 +228,13 @@ class User extends DbModel
 	// Sends a new user activation email
 	function sendActivationEmail ($request, $email)
 	{
-		$r = $this->filter('user_id', $this->userId);
+		$r = $this->query()->where('user_id', $this->userId)->limit(1)->result();
 		$tplFile = App::Data('emails/activate.tpl')->getFullPath();
 		$template = Template::fromFile($tplFile);
 		$template->email = $email;
-		$template->username = $r->data('username');
-		$template->full_name = $r->data('full_name');
-		$template->activation_code = $r->data('activation_code');
+		$template->username = $r['username'];
+		$template->full_name = $r['full_name'];
+		$template->activation_code = $r['activation_code'];
 		$template->base_url = $this->Config->getFrontendURL($request);
 		$template->user_url = $this->getURL();
 		$template->user_id = $this->userId;
@@ -251,11 +251,11 @@ class User extends DbModel
 	// Activates a user's account
 	function activate ($activationCode)
 	{
-		$r = $this->filter('activation_code', $activationCode)->filter('user_id', $this->userId);
-		if ($r->min(1))
+		$r = $this->query()->where('activation_code', $activationCode)->andWhere('user_id', $this->userId)->limit(1);
+		if ($r->count() > 0)
 		{
 			// Activated
-			return $this->set($this->userId, ['user_level' => 1]);
+			return $this->find($this->userId)->update(['user_level' => 1]);
 		}
 		else
 		{
@@ -267,21 +267,21 @@ class User extends DbModel
 	function listUsers ($page = 0)
 	{
 		// NOTE: DB calls
-		return $this->display($this->perPage, $page)->order('username', 'asc')->rows();
+		return $this->query()->limit($page*$this->perPage, $this->perPage)->orderBy('username', 'asc')->results();
 	}
 	
 	// Returns a count of all users
 	function count ()
 	{
 		// NOTE: DB call
-		return $this->rowCount();
+		return $this->query()->count();
 	}
 	
 	// Removes a user account from the database
 	function deleteUser ($userId)
 	{
 		// NOTE: DB calls
-		return $this->filter('user_id', $userId)->clear() > 0;
+		return $this->query()->where('user_id', $userId)->delete();
 	}
 	
 	// Modifies a user's account in the database (admin-only)
@@ -304,7 +304,7 @@ class User extends DbModel
 		}
 		
 		// NOTE: DB call
-		if (!$this->set($userId, $data))
+		if (!$this->find($userId)->update($data))
 		{
 			$this->message = 'One or more fields is missing';
 			return false;

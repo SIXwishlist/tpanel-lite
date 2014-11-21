@@ -41,7 +41,7 @@ class UserController extends AdminBase
 			return;
 		}
 		
-		$username = $this->User->get($user)->username;
+		$username = $this->User->query()->where('username', $user)->result('username');
 		$this->FileSystem->setUser($username);
 		$this->Backup->setUser($user);
 		
@@ -78,7 +78,7 @@ class UserController extends AdminBase
 		$userId = $request->param('user', false);
 		
 		// NOTE: Syntactic sugar -- fallback($this->User->get($userId))->toArray() => false if "get" returns false?
-		$user = $this->User->get($userId);
+		$user = $this->User->query()->where('user_id', $userId);
 		$view->userId = $userId;
 		if (!$user)
 		{
@@ -86,9 +86,9 @@ class UserController extends AdminBase
 		}
 		else
 		{
-			$view->user = $user->toArray();
+			$view->user = $user->result();
 		}
-		$view->message = $this->User->message;
+		$view->message = $user->result('message');
 		
 		$view->renderAsJSON();
 	}

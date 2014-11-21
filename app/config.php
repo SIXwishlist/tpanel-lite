@@ -29,7 +29,7 @@ class Application extends Package
 			$conf = [];
 		}
 		$this->theme = isset($conf['theme']) ? $conf['theme'] : null;
-		View::setAdapter('Template');
+		View::setAdapter('PHTML');
 		Session::setTimeout(8*60*60);
 	}
 }
